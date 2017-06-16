@@ -87,21 +87,15 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //create a scene
-    //QGraphicsScene * scene = new QGraphicsScene();
 
+    //create widget + set  intial size
     QWidget *myWidget = new QWidget();
     myWidget->setGeometry(0,0,1370,700);
 
     //create board
     chessBoard(myWidget, rect);
 
-    //add a view
-   // QGraphicsView * view = new QGraphicsView(scene);
-
-    // make visiable
-    //view->show();
-
+    //show the board
     myWidget->show();
 
     return a.exec();

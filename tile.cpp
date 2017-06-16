@@ -25,7 +25,6 @@ void Tile::mousePressEvent(QMouseEvent * event){
 
 bool Tile::moveChecking(Tile *temp, int countC){
     
-    int retValue;
     
     if(countC==1){
         if(temp->piece && (temp->pieceColor==turns%2)){
@@ -55,7 +54,8 @@ bool Tile::moveChecking(Tile *temp, int countC){
 
         //check if input coordinates are a valid move for piece and player
         if(isValid->whichPiece() == true){
-            boardArr[tempy2][tempx2] = boardArr[tempy][tempx];
+            std::string tempPiece = boardArr[tempy2][tempx2];
+            boardArr[tempy2][tempx2] = tempPiece;
             boardArr[tempy][tempx] = " ";
 
             click1->piece=0;
@@ -75,13 +75,20 @@ bool Tile::moveChecking(Tile *temp, int countC){
             turns++;
             count = 0;
 
+
+            for(int i = 0; i < 8; i++){
+                for(int j =0; j < 8; j++){
+                    std::cout << boardArr[i][j] ;
+                }
+                std::cout << std::endl;
+            }
+
         } else {
 
             count = 0;
         }
 
     }
-
     
 }
 
@@ -92,6 +99,7 @@ void Tile::display(std::string elem){
 
     this->pieceName=elem;
 
+    //white pieces
     if(this->pieceColor == 0 && this->piece == 1){
         if(elem == "P"){
             this->setPixmap(QPixmap(":/Images/pawn_white.svg"));
@@ -106,7 +114,7 @@ void Tile::display(std::string elem){
         } else if(elem == "Q"){
             this->setPixmap(QPixmap(":/Images/queen_white.svg"));
         }
-
+     //black pieces
     } else if (this->piece == 1){
         if (elem == "p"){
             this->setPixmap(QPixmap(":/Images/pawn_black.svg"));
@@ -124,13 +132,6 @@ void Tile::display(std::string elem){
     }else {
         this->clear();
     }
-
-
-
-    //black pieces
-
-
-
 }
 
 void Tile::tileDisplay()
