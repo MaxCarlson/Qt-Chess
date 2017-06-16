@@ -10,3 +10,9 @@ Tile::Tile(){
 void Tile::mousePressEvent(QGraphicsSceneMouseEvent *event){
     qDebug() << "My Tile knows that you clicked on it!";
 }
+
+void Tile::display(std::string elem){
+
+
+
+}

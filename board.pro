@@ -28,7 +28,8 @@ SOURCES += \
     tile.cpp
 
 HEADERS += \
-    tile.h
+    tile.h \
+    externs.h
 
 FORMS += \
         mainwindow.ui
