@@ -8,6 +8,11 @@
 class Tile : public QGraphicsRectItem
 {
 public:
+    //Fields
+    int tileColor, piece, pieceColor, row, col, tileNum;
+    std::string pieceName;
+
+    //constructor
     Tile();
 
     //mouse clicks

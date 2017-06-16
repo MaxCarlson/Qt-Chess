@@ -24,7 +24,7 @@ std::string boardArr [8][8]= {
 void chessBoard(QGraphicsScene *scene){
 
     int boardX = -400, boardY = -400;
-    //create qt 64 tile chess board
+    //seed Qt 64 tile chess board - blank tiles
     for(int i = 0; i < 8; i++){
         boardX = -400;
         for(int j = 0; j < 8; j++){
