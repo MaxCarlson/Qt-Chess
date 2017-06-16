@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    tile.cpp
+    tile.cpp \
+    Pieces.cpp
 
 HEADERS += \
     tile.h \
-    externs.h
+    externs.h \
+    Pieces.h
 
 FORMS += \
         mainwindow.ui

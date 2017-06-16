@@ -6,5 +6,11 @@ extern std::string boardArr[8][8];
 extern std::string blackPieces[7];
 extern std::string whitePieces[7];
 
+extern int turns;
+
+extern bool whiteSafe[8][8];
+extern bool blackSafe[8][8];
+
+
 
 #endif // EXTERNS_H

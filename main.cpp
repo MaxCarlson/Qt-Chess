@@ -9,6 +9,9 @@
 //create an item array to to represent chess board tiles
 Tile * rect[8][8];
 
+// number of half turns
+int turns = 0;
+
 //array of chess board
 std::string boardArr [8][8]= {
     {"r", "n", "b", "q", "k", "b", "n", "r"},
@@ -20,6 +23,11 @@ std::string boardArr [8][8]= {
     {"P", "P", "P", "P", "P", "P", "P", "P"},
     {"R", "N", "B", "Q", "K", "B", "N", "R"},
               };
+//king saftey arrays
+bool whiteSafe[8][8];
+bool blackSafe[8][8];
+
+//color piece arrays
 
 std::string blackPieces[7] = {"p", "q", "k", "b", "n", "r", " "};
 std::string whitePieces[7] = {"P", "Q", "K", "B", "N", "R", " "};
@@ -48,21 +56,7 @@ void chessBoard(QWidget *baseWidget, Tile *rect[8][8]){
     }
 
 
-    //white pawns
-    for(int i = 0; i < 8; i++){
-        rect[6][i]->piece=1;
-        rect[6][i]->pieceColor=0;
-        rect[6][i]->display("P");
-    }
-
-    //black pawns
-    for(int i = 0; i < 8; i++){
-        rect[1][i]->piece=1;
-        rect[1][i]->pieceColor=1;
-        rect[1][i]->display("p");
-    }
-
-    //pieces load
+    //Load all pieces into correct starting spots
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             if(boardArr[j][i] != " "){

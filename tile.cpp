@@ -1,8 +1,15 @@
 #include "tile.h"
 #include <QDebug>
+#include "Pieces.h"
+
+
+Pieces *isValid = new Pieces();
 
 extern Tile * rect[8][8];
 extern QWidget *myWidget;
+
+Tile *click1;
+
 
 //Tile::Tile(QWidget *pParent, Qt::WindowFlags f){
 
@@ -10,7 +17,35 @@ extern QWidget *myWidget;
 
 void Tile::mousePressEvent(QMouseEvent * event){
     qDebug() << "My Tile knows that you clicked on it!";
+    moveChecking(this);
 }
+
+bool Tile::moveChecking(Tile *temp){
+    
+    int retValue, tempx, tempy, tempx2, tempy2;
+    
+    if(temp->piece && (temp->pieceColor==turns)){
+
+        tempx = temp->row;
+        tempy = temp->col;
+
+        click1 = new Tile();
+        tempx2 = click1->row;
+        tempy2 = click1->col;
+
+
+        isValid->coordinates(tempx, tempy, tempx2, tempy2);
+
+        if(isValid->whichPiece() == true){
+            click1 = temp;
+        }
+        
+    }    
+    
+}
+
+
+
 
 void Tile::display(std::string elem){
 
