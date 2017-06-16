@@ -31,12 +31,14 @@ bool Pieces::whichPiece(){
         for(int i = 0; i < 6; i++){
             if(boardArr[y2][x2] == whitePieces[i]){
                 return false;
+                pieceToBeTaken = whitePieces[i];
             }
         }
     } else if(turns % 2 == 1){
         for(int i = 0; i < 6; i++){
             if(boardArr[y2][x2] == blackPieces[i]){
                 return false;
+                pieceToBeTaken = blackPieces[i];
             }
         }
     }
@@ -106,6 +108,7 @@ bool Pieces::whichPiece(){
         }
         //find out if moving piece makes king unsafe
         //and move piece back if it does
+
         whiteKingSaftey();
         if(isWhiteKingSafe() == false){
             kingIsUnsafe(pieceMoved);
@@ -201,7 +204,7 @@ bool Pieces::isBlackKingSafe(){
     return true;
 }
 void Pieces::kingIsUnsafe(std::string p){
-    boardArr[y2][x2] = " ";
+    boardArr[y2][x2] = pieceToBeTaken;
     boardArr[y1][x1] = p;
     //std::cout << "That move puts you into check! Try again." << endl;
 }

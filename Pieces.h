@@ -37,11 +37,13 @@ public:
 private:
 
     char alphabet[8] = {'a','b','c','d','e','f','g','h'};
-    int flip[8] = {7, 6, 5, 4, 3, 2, 1, 0};
+    //int flip[8] = {7, 6, 5, 4, 3, 2, 1, 0};
 
     //arrays for checking friendly fire
     std::string blackPieces[7] = {"p", "q", "k", "b", "n", "r", " "};
     std::string whitePieces[7] = {"P", "Q", "K", "B", "N", "R", " "};
+
+    std::string pieceToBeTaken;
 
     // kings safe checking + arrays for white and black lines of attack for king
 
@@ -74,7 +76,6 @@ private:
     bool whiteKnight();
     bool whiteBishop();
     bool whiteQueen();
-
     bool whiteKing();
 
     //black pieces
@@ -83,7 +84,6 @@ private:
     bool blackKnight();
     bool blackBishop();
     bool blackQueen();
-
     bool blackKing();
 };
 
