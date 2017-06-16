@@ -46,46 +46,59 @@ bool Tile::moveChecking(Tile *temp, int countC){
         }
 
     } else {
-        tempx = click1->col;
-        tempy = click1->row;
-        tempx2 = temp->col;
-        tempy2 = temp->row;
-        isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
-        //check if input coordinates are a valid move for piece and player
-        if(isValid->whichPiece() == true){
-            std::string tempPiece = boardArr[tempy2][tempx2];
-            boardArr[tempy2][tempx2] = tempPiece;
-            boardArr[tempy][tempx] = " ";
-
-            click1->piece=0;
-            temp->piece=1;
-
-            temp->pieceColor=click1->pieceColor;
-            temp->pieceName=click1->pieceName;
-
-            click1->display(click1->pieceName);
-            temp->display(click1->pieceName);
-
+        if(temp->tileNum==click1->tileNum){
             click1->tileDisplay();
-            temp->tileDisplay();
-
-
-
-            turns++;
             count = 0;
-
-
-            for(int i = 0; i < 8; i++){
-                for(int j =0; j < 8; j++){
-                    std::cout << boardArr[i][j] ;
-                }
-                std::cout << std::endl;
-            }
 
         } else {
+            //ready coordinates to give to Pieces
+            tempx = click1->col;
+            tempy = click1->row;
+            tempx2 = temp->col;
+            tempy2 = temp->row;
+            //give coordinates of origin and possible landing
+            isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
-            count = 0;
+            //check if input coordinates are a valid move for piece and player
+            if(isValid->whichPiece() == true){
+                //replace moved piece with a space and move piece
+                std::string tempPiece = boardArr[tempy2][tempx2];
+                boardArr[tempy2][tempx2] = tempPiece;
+                boardArr[tempy][tempx] = " ";
+
+                //switch Qwidget values on origin and spot piece landed
+                click1->piece=0;
+                temp->piece=1;
+
+                //give moved piece same attributes
+                temp->pieceColor=click1->pieceColor;
+                temp->pieceName=click1->pieceName;
+
+
+                click1->display(click1->pieceName);
+                temp->display(click1->pieceName);
+
+                click1->tileDisplay();
+                temp->tileDisplay();
+
+
+
+                turns++;
+                count = 0;
+
+                //debugging stuff
+                for(int i = 0; i < 8; i++){
+                    for(int j =0; j < 8; j++){
+                        std::cout << boardArr[i][j] ;
+                    }
+                    std::cout << std::endl;
+                }
+            }else {
+
+                count = 1;
+            }
+
         }
 
     }
