@@ -2,10 +2,10 @@
 #define TILE_H
 
 
-#include <QGraphicsRectItem>
+#include <QLabel>
 
 
-class Tile : public QGraphicsRectItem
+class Tile : public QLabel
 {
 public:
     //Fields
@@ -13,13 +13,17 @@ public:
     std::string pieceName;
 
     //constructor
-    Tile();
+    Tile(QWidget* pParent=0, Qt::WindowFlags f=0) : QLabel(pParent, f) {};
+
 
     //mouse clicks
-    void mousePressEvent(QGraphicsSceneMouseEvent * event);
+    void mousePressEvent(QMouseEvent * event);
 
     //display pieces on correct tiles
     void display(std::string elem);
+
+    //color tiles
+    void tileDisplay();
 
 };
 

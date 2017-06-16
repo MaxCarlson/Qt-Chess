@@ -21,27 +21,68 @@ std::string boardArr [8][8]= {
     {"R", "N", "B", "Q", "K", "B", "N", "R"},
               };
 
-void chessBoard(QGraphicsScene *scene){
+std::string blackPieces[7] = {"p", "q", "k", "b", "n", "r", " "};
+std::string whitePieces[7] = {"P", "Q", "K", "B", "N", "R", " "};
 
-    int boardX = -400, boardY = -400;
-    //seed Qt 64 tile chess board - blank tiles
+
+void chessBoard(QWidget *baseWidget, Tile *rect[8][8]){
+
+    int boardX = 350, boardY = 125, k = 0;
+    //seed Qt 64 tile chess board - colored empty tiles
     for(int i = 0; i < 8; i++){
-        boardX = -400;
+        boardX = 350;
         for(int j = 0; j < 8; j++){
-            //seed array with rect items
-            rect[i][j] = new Tile();
-            rect[i][j]->setRect(boardX,boardY,100,100);
+            //seed tile array with tile objects
+            rect[i][j] = new Tile(baseWidget);
+            rect[i][j]->tileColor=(i+j)%2;
+            rect[i][j]->piece=0;
+            rect[i][j]->row=i;
+            rect[i][j]->col=j;
+            rect[i][j]->tileNum=k++;
+            rect[i][j]->tileDisplay();
+            rect[i][j]->setGeometry(boardX,boardY,64,64);
 
-            //add items to the scene
-            scene->addItem(rect[i][j]);
-
-            //make rect (tile) focusable
-            rect[i][j]->setFlag(QGraphicsItem::ItemIsFocusable);
-
-            boardX += 100;
+            boardX += 64;
         }
-        boardY += 100;
+        boardY += 64;
     }
+
+
+    //white pawns
+    for(int i = 0; i < 8; i++){
+        rect[6][i]->piece=1;
+        rect[6][i]->pieceColor=0;
+        rect[6][i]->display("P");
+    }
+
+    //black pawns
+    for(int i = 0; i < 8; i++){
+        rect[1][i]->piece=1;
+        rect[1][i]->pieceColor=1;
+        rect[1][i]->display("p");
+    }
+
+    //pieces load
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            if(boardArr[j][i] != " "){
+                rect[j][i]->piece=1;
+                for(int k = 0; k < 8; k++){
+                    if(boardArr[j][i] == whitePieces[k]){
+                        rect[j][i]->pieceColor=0;
+                        rect[j][i]->display(whitePieces[k]);
+                    } else if (boardArr[j][i] == blackPieces[k]){
+                        rect[j][i]->pieceColor=1;
+                        rect[j][i]->display(blackPieces[k]);
+                    }
+                }
+            }
+
+        }
+    }
+
+
+
 }
 
 int main(int argc, char *argv[])
@@ -49,16 +90,21 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     //create a scene
-    QGraphicsScene * scene = new QGraphicsScene();
+    //QGraphicsScene * scene = new QGraphicsScene();
+
+    QWidget *myWidget = new QWidget();
+    myWidget->setGeometry(0,0,1370,700);
 
     //create board
-    chessBoard(scene);
+    chessBoard(myWidget, rect);
 
     //add a view
-    QGraphicsView * view = new QGraphicsView(scene);
+   // QGraphicsView * view = new QGraphicsView(scene);
 
     // make visiable
-    view->show();
+    //view->show();
+
+    myWidget->show();
 
     return a.exec();
 }
