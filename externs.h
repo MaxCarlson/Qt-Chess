@@ -8,8 +8,12 @@ extern std::string whitePieces[7];
 
 extern int turns;
 
+extern int tempx, tempy, tempx2, tempy2;
+
 extern bool whiteSafe[8][8];
 extern bool blackSafe[8][8];
+
+extern int count;
 
 
 

@@ -11,6 +11,7 @@ public:
     //Fields
     int tileColor, piece, pieceColor, row, col, tileNum;
     std::string pieceName;
+    int tempx, tempy, tempx2, tempy2;
 
     //constructor
     Tile(QWidget* pParent=0, Qt::WindowFlags f=0) : QLabel(pParent, f) {};
@@ -21,7 +22,7 @@ public:
     void mousePressEvent(QMouseEvent * event);
 
     //Move checking
-    bool moveChecking(Tile *temp);
+    bool moveChecking(Tile *temp, int count);
     
     //display pieces on correct tiles
     void display(std::string elem);

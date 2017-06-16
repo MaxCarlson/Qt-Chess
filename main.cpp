@@ -12,6 +12,10 @@ Tile * rect[8][8];
 // number of half turns
 int turns = 0;
 
+int count = 0;
+
+int tempx, tempy, tempx2, tempy2;
+
 //array of chess board
 std::string boardArr [8][8]= {
     {"r", "n", "b", "q", "k", "b", "n", "r"},

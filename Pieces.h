@@ -27,6 +27,7 @@ public:
 
     Pieces();
 
+
     void coordinates(int a, int b, int c, int d);
     bool whichPiece();
 

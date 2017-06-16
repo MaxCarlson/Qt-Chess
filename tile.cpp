@@ -1,12 +1,15 @@
 #include "tile.h"
 #include <QDebug>
 #include "Pieces.h"
+#include "externs.h"
 
 
 Pieces *isValid = new Pieces();
 
 extern Tile * rect[8][8];
 extern QWidget *myWidget;
+
+
 
 Tile *click1;
 
@@ -16,31 +19,63 @@ Tile *click1;
 //}
 
 void Tile::mousePressEvent(QMouseEvent * event){
-    qDebug() << "My Tile knows that you clicked on it!";
-    moveChecking(this);
+    //qDebug() << "My Tile knows that you clicked on it!";
+    moveChecking(this, ++count);
 }
 
-bool Tile::moveChecking(Tile *temp){
+bool Tile::moveChecking(Tile *temp, int countC){
     
-    int retValue, tempx, tempy, tempx2, tempy2;
+    int retValue;
     
-    if(temp->piece && (temp->pieceColor==turns)){
-
-        tempx = temp->row;
-        tempy = temp->col;
-
-        click1 = new Tile();
-        tempx2 = click1->row;
-        tempy2 = click1->col;
+    if(countC==1){
+        if(temp->piece && (temp->pieceColor==turns)){
 
 
+            if(temp->pieceName == "P"){
+                tempx = temp->col;
+                tempy = temp->row;
+
+                click1 = new Tile();
+
+                temp->setStyleSheet("QLabel {background-color: green;}");
+
+                click1=temp;
+            } else {
+                count = 0;
+            }
+        } else {
+            count = 0;
+        }
+
+    } else {
+        tempx = click1->col;
+        tempy = click1->row;
+        tempx2 = temp->col;
+        tempy2 = temp->row;
         isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
         if(isValid->whichPiece() == true){
-            click1 = temp;
+            click1->piece=0;
+            temp->piece=1;
+
+            temp->pieceColor=click1->pieceColor;
+            temp->pieceName=click1->pieceName;
+
+            click1->display(click1->pieceName);
+            temp->display(click1->pieceName);
+
+            click1->tileDisplay();
+            temp->tileDisplay();
+
+            count = 0;
+
+        } else {
+
+            count = 1;
         }
-        
-    }    
+
+    }
+
     
 }
 
