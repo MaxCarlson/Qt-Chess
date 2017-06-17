@@ -3,7 +3,7 @@
 
 
 #include <QLabel>
-
+#include <movegeneration.h>
 
 class Tile : public QLabel
 {
@@ -30,7 +30,7 @@ public:
     //color tiles
     void tileDisplay();
 
-
+    void aiTurn();
 
 };
 

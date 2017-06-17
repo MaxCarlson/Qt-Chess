@@ -20,7 +20,7 @@ extern int count, numberOfPieceMoved;
 
 extern int aiOn;
 
-extern std::vector<std::string> possibleMoves;
+extern std::vector<int> possibleMoves;
 
 
 

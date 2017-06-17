@@ -13,14 +13,20 @@ extern QWidget *myWidget;
 
 Tile *click1;
 
-
-//Tile::Tile(QWidget *pParent, Qt::WindowFlags f){
-
-//}
+// NOTE!!!!!
+//Castling doesn't move the rook on the GUI only on the array of the board
 
 void Tile::mousePressEvent(QMouseEvent * event){
     //qDebug() << "My Tile knows that you clicked on it!";
     moveChecking(this, ++count);
+
+    //debugging stuff
+    for(int i = 0; i < 8; i++){
+        for(int j =0; j < 8; j++){
+            std::cout << boardArr[i][j] << " " ;
+        }
+        std::cout << std::endl;
+    }
 }
 
 bool Tile::moveChecking(Tile *temp, int countC){
@@ -87,14 +93,12 @@ bool Tile::moveChecking(Tile *temp, int countC){
                 turns++;
                 count = 0;
 
-                //debugging stuff
-                for(int i = 0; i < 8; i++){
-                    for(int j =0; j < 8; j++){
-                        std::cout << boardArr[i][j] << " " ;
-                    }
-                    std::cout << std::endl;
+                if(aiOn == 1){
+                    aiTurn();
                 }
-            }else {
+
+
+            } else {
 
                 count = 1;
             }
@@ -105,7 +109,10 @@ bool Tile::moveChecking(Tile *temp, int countC){
     
 }
 
+void Tile::aiTurn(){
+    moveGeneration *newMove = new moveGeneration;
 
+}
 
 
 void Tile::display(std::string elem){

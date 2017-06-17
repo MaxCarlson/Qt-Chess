@@ -567,6 +567,7 @@ bool Pieces::whiteKing(){
                 boardArr[y1][x1-2] = "K";
                 boardArr[y1][x1-1] = "R";
                 boardArr[y1][x1-4] = " ";
+                boardArr[y1][x1] = " ";
                 wLRookMoved = true;
                 numberOfPieceMoved = 2;
                 return true;
@@ -579,6 +580,7 @@ bool Pieces::whiteKing(){
                 boardArr[y1][x1+2] = "K";
                 boardArr[y1][x1+1] = "R";
                 boardArr[y1][x1+4] = " ";
+                boardArr[y1][x1] = " ";
                 wLRookMoved = true;
                 numberOfPieceMoved = 2;
                 return true;
@@ -590,7 +592,116 @@ bool Pieces::whiteKing(){
 }
 
 bool Pieces::blackKing(){
+    //king is safe after move check
+    //up
+    if(y1-y2 == 1 && x1 == x2){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
 
+    //down
+    } else if(y2-y1 == 1 && x1 == x2){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
+
+    //right
+    } else if(y1 == y2 && x2-x1 == 1){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
+
+    //left
+    } else if(y1 == y2 && x1-x2 == 1){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
+    //up left
+    }else if(y1-y2 == 1 && x1-x2 == 1){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
+    //up right
+    } else if(y1-y2 == 1 && x1-x2 == -1){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
+    //down left
+    } else if (y1-y2 == -1 && x1-x2 == 1){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
+    //down right
+    } else if (y1-y2 == -1 && x1-x2 == -1){
+        for(int i = 0; i < 7; i++){
+            if(boardArr[y2][x2] == whitePieces[i]){
+                boardArr[y1][x1] = " ";
+                boardArr[y2][x2] = "k";
+                return true;
+            }
+        }
+    }
+
+    //castle and king start coordinates match
+    if(blackKingMoved == false && x1 == 4 && y1 == 0){
+        //if left rook and land coordinates match and sqaures between are empty
+        if(bLRookMoved == false && x2 == 2 && y2 == 0 && boardArr[y1][x1-1] == " " && boardArr[y1][x1-2] == " " && boardArr[y1][x1-3] == " "){
+
+            //not moving through enemy lines or into check
+            if(blackSafe[y1][x1] == true && blackSafe[y1][x1-1] == true && blackSafe[y1][x1-2] == true){
+                boardArr[y1][x1-2] = "k";
+                boardArr[y1][x1-1] = "r";
+                boardArr[y1][x1-4] = " ";
+                boardArr[y1][x1] = " ";
+                bLRookMoved = true;
+                numberOfPieceMoved = 2;
+                return true;
+            }
+        //if right rook and king start coordinates match and sqaures between are empty
+        } else if (bRRookMoved == false && x2 == 6 && y2 == 0 && boardArr[y1][x1+1] == " " && boardArr[y1][x1+2] == " "){
+
+            //not moving through enemy lines or into check
+            if(blackSafe[y1][x1] == true && blackSafe[y1][x1+1] == true && blackSafe[y1][x1+1] == true){
+                boardArr[y1][x1+2] = "k";
+                boardArr[y1][x1+1] = "r";
+                boardArr[y1][x1+4] = " ";
+                boardArr[y1][x1] = " ";
+                bLRookMoved = true;
+                numberOfPieceMoved = 2;
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 bool Pieces::whiteQueen(){
