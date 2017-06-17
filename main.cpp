@@ -14,22 +14,11 @@ int turns = 0;
 
 int count = 0;
 
+int numberOfPieceMoved = 0;
+
 int tempx, tempy, tempx2, tempy2;
 
-//array of chess board
-std::string boardArr [8][8]= {
-    {"r", "n", "b", "q", "k", "b", "n", "r"},
-    {"p", "p", "p", "p", "p", "p", "p", "p",},
-    {" ", " ", " ", " ", " ", " ", " ", " "},
-    {" ", " ", " ", " ", " ", " ", " ", " "},
-    {" ", " ", " ", " ", " ", " ", " ", " "},
-    {" ", " ", " ", " ", " ", " ", " ", " "},
-    {"P", "P", "P", "P", "P", "P", "P", "P"},
-    {"R", "N", "B", "Q", "K", "B", "N", "R"},
-              };
-//king saftey arrays
-bool whiteSafe[8][8];
-bool blackSafe[8][8];
+
 
 //color piece arrays
 
@@ -75,12 +64,8 @@ void chessBoard(QWidget *baseWidget, Tile *rect[8][8]){
                     }
                 }
             }
-
         }
     }
-
-
-
 }
 
 int main(int argc, char *argv[])

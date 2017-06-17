@@ -63,9 +63,9 @@ bool Tile::moveChecking(Tile *temp, int countC){
             //check if input coordinates are a valid move for piece and player
             if(isValid->whichPiece() == true){
                 //replace moved piece with a space and move piece
-                std::string tempPiece = boardArr[tempy2][tempx2];
-                boardArr[tempy2][tempx2] = tempPiece;
-                boardArr[tempy][tempx] = " ";
+                //std::string tempPiece = boardArr[tempy2][tempx2];
+                //boardArr[tempy2][tempx2] = tempPiece;
+                //boardArr[tempy][tempx] = " ";
 
                 //switch Qwidget values on origin and spot piece landed
                 click1->piece=0;
@@ -90,7 +90,7 @@ bool Tile::moveChecking(Tile *temp, int countC){
                 //debugging stuff
                 for(int i = 0; i < 8; i++){
                     for(int j =0; j < 8; j++){
-                        std::cout << boardArr[i][j] ;
+                        std::cout << boardArr[i][j] << " " ;
                     }
                     std::cout << std::endl;
                 }

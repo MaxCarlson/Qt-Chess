@@ -22,6 +22,7 @@
 
 
 
+
 class Pieces {
 public:
 
@@ -34,6 +35,8 @@ public:
     static bool isWhiteKingSafe();
     static bool isBlackKingSafe();
 
+
+
 private:
 
     char alphabet[8] = {'a','b','c','d','e','f','g','h'};
@@ -43,7 +46,14 @@ private:
     std::string blackPieces[7] = {"p", "q", "k", "b", "n", "r", " "};
     std::string whitePieces[7] = {"P", "Q", "K", "B", "N", "R", " "};
 
+    //marker incase move is invalid and piece need to be reset
     std::string pieceToBeTaken;
+
+    //rook movements for castling
+    bool wLRookMoved = false;
+    bool wRRookMoved = false;
+    bool bLRookMoved = false;
+    bool bRRookMoved = false;
 
     // kings safe checking + arrays for white and black lines of attack for king
 

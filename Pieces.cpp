@@ -13,6 +13,20 @@
 
 #include "Pieces.h"
 
+//array of chess board
+std::string boardArr [8][8]= {
+    {"r", "n", "b", "q", "k", "b", "n", "r"},
+    {"p", "p", "p", "p", "p", "p", "p", "p",},
+    {" ", " ", " ", " ", " ", " ", " ", " "},
+    {" ", " ", " ", " ", " ", " ", " ", " "},
+    {" ", " ", " ", " ", " ", " ", " ", " "},
+    {" ", " ", " ", " ", " ", " ", " ", " "},
+    {"P", "P", "P", "P", "P", "P", "P", "P"},
+    {"R", "N", "B", "Q", "K", "B", "N", "R"},
+              };
+//king saftey arrays
+bool whiteSafe[8][8];
+bool blackSafe[8][8];
 
 Pieces::Pieces() {
 
@@ -76,31 +90,37 @@ bool Pieces::whichPiece(){
     //white pieces
     if(turns % 2 == 0){
         if(boardArr[y1][x1] == "P"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(whitePawn() == false){
                 return false;
             }
             pieceMoved = "P";
         }else if(boardArr[y1][x1] == "R"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(whiteRook() == false){
                 return false;
             }
             pieceMoved = "R";
         }else if(boardArr[y1][x1] == "N"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(whiteKnight() == false){
                 return false;
             }
             pieceMoved = "N";
         } else if(boardArr[y1][x1] == "B"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(whiteBishop() == false){
                 return false;
             }
             pieceMoved = "B";
         } else if(boardArr[y1][x1] == "Q"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(whiteQueen() == false){
                 return false;
             }
             pieceMoved = "Q";
         }else if(boardArr[y1][x1] == "K"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(whiteKing() == false){
                 return false;
             }
@@ -114,8 +134,15 @@ bool Pieces::whichPiece(){
             kingIsUnsafe(pieceMoved);
             return false;
         }
+        //king and rook move checks for castling
         if(pieceMoved == "K"){
             whiteKingMoved = true;
+        } else if (pieceMoved == "R"){
+            if(x1 == 0 && y1 == 7){
+                wRRookMoved = true;
+            } else if (x1 == 7 && y1 == 7){
+                wLRookMoved = true;
+            }
         }
         return true;
     //black pieces
@@ -156,8 +183,15 @@ bool Pieces::whichPiece(){
             kingIsUnsafe(pieceMoved);
             return false;
         }
+        //king and castle move checks for castling
         if(pieceMoved == "k"){
             blackKingMoved = true;
+        } else if (pieceMoved == "r"){
+            if(x1 == 0 && y1 == 0){
+                bLRookMoved = true;
+            } else if (x1 == 7 && y1 == 0){
+                bLRookMoved = true;
+            }
         }
         return true;
     }
@@ -206,7 +240,7 @@ bool Pieces::isBlackKingSafe(){
 void Pieces::kingIsUnsafe(std::string p){
     boardArr[y2][x2] = pieceToBeTaken;
     boardArr[y1][x1] = p;
-    //std::cout << "That move puts you into check! Try again." << endl;
+    std::cout << "That move puts you into check! Try again." << std::endl;
 }
 
 //checking all squares to see where king can move or not
@@ -512,7 +546,9 @@ bool Pieces::whiteKing(){
 
     //castle
     if(whiteKingMoved == false){
+        if(wLRookMoved == false && x1 == 4 && y1 == 7 && x2 == 2 && y2 == 7){
 
+        }
     }
 
     return false;
@@ -1117,6 +1153,7 @@ bool Pieces::whitePawn(){
         return true;
     //Need turn to queen + others
     }
+
     return false;
 }
 
