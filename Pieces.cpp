@@ -72,13 +72,7 @@ bool Pieces::whichPiece(){
         }
     }
 
-    //setting king safety arrays to all true
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
-            whiteSafe[i][j] = true;
-            blackSafe[i][j] = true;
-        }
-    }
+    resetSafetyBoards();
 
     //Set king safety boards
     whiteKingSaftey();
@@ -126,9 +120,10 @@ bool Pieces::whichPiece(){
             }
             pieceMoved = "K";
         }
+
+        resetSafetyBoards();
         //find out if moving piece makes king unsafe
         //and move piece back if it does
-
         whiteKingSaftey();
         if(isWhiteKingSafe() == false){
             kingIsUnsafe(pieceMoved);
@@ -148,36 +143,45 @@ bool Pieces::whichPiece(){
     //black pieces
     }else if (turns % 2 == 1) {
         if(boardArr[y1][x1] == "p"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(blackPawn() == false){
                 return false;
             }
             pieceMoved = "p";
         }else if(boardArr[y1][x1] == "r"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(blackRook() == false){
                 return false;
             }
             pieceMoved = "r";
         } else if(boardArr[y1][x1] == "n"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(blackKnight() == false){
                 return false;
             }
             pieceMoved = "n";
         }else if(boardArr[y1][x1] == "b"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(blackBishop() == false){
                 return false;
             }
             pieceMoved = "b";
         }else if(boardArr[y1][x1] == "q"){
+            pieceToBeTaken = boardArr[y2][x2];
             if (blackQueen() == false){
                 return false;
             }
             pieceMoved = "q";
         }else if(boardArr[y1][x1] == "k"){
+            pieceToBeTaken = boardArr[y2][x2];
             if(blackKing() == false){
                 return false;
             }
             pieceMoved = "k";
         }
+        resetSafetyBoards();
+        //find out if moving piece makes king unsafe
+        //and move piece back if it does
         blackKingSafety();
         if(isBlackKingSafe() == false){
             kingIsUnsafe(pieceMoved);
@@ -200,6 +204,15 @@ bool Pieces::whichPiece(){
 }
 //NEED add castling
 //Need En Passant
+void Pieces::resetSafetyBoards(){
+    //setting king safety arrays to all true
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            whiteSafe[i][j] = true;
+            blackSafe[i][j] = true;
+        }
+    }
+}
 
 
 bool Pieces::isWhiteKingSafe(){

@@ -63,6 +63,8 @@ private:
 
     void kingIsUnsafe(std::string p);
 
+    void resetSafetyBoards();
+
     //Movement safe functions for marking board unsafe
     void upDownLeftRightM(int x, int y, char wb);
     void diagonalM(int x, int y, char wb);
