@@ -112,6 +112,7 @@ bool Tile::moveChecking(Tile *temp, int countC){
 void Tile::aiTurn(){
     moveGeneration *newMove = new moveGeneration;
 
+
 }
 
 
