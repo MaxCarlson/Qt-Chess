@@ -189,7 +189,7 @@ int moveGeneration::calculateBestMove()
 
 }
 
-int moveGeneration::evaluateBoard()
+float moveGeneration::evaluateBoard()
 {
     int totalEvaluation = 0;
 
@@ -202,41 +202,53 @@ int moveGeneration::evaluateBoard()
 }
 
 
-int moveGeneration::getPieceValue(std::string piece, int x, int y)
+
+
+flaot moveGeneration::getPieceValue(std::string piece, int x, int y)
 {
     //NEED PIECE EVALS FOR POSITIONS
     if(piece == " "){
         return 0;
     }
-    //black
-    if(piece == "p"){
-        return bPawnV;
-    } else if (piece =="r"){
-        return bRookV;
-    }else if (piece =="k"){
-        return  bKnightV;
-    }else if (piece =="b"){
-        return bBishopV;
-    }else if (piece =="q"){
-        return bQueenV;
-    }else if (piece =="k"){
-        return bKingV;
-    //white
-    }else if(piece == "P"){
-        return wPawnV;
-    } else if (piece =="R"){
-        return wRookV;
-    }else if (piece =="K"){
-        return  wKnightV;
-    }else if (piece =="B"){
-        return wBishopV;
-    }else if (piece =="Q"){
-        return wQueenV;
-    }else if (piece =="K"){
-        return wKingV;
+    float absoluteValue = getAbsoluteValue(piece, int x, int y);
+
+    if(piece == "P" || piece == "R" || piece == "N" || piece == "B" || piece == "K" || piece == "Q"){
+        return absoluteValue;
+    } else {
+        return - absoluteValue;
     }
 
+}
 
+float moveGeneration::getAbsoluteValue(std::string piece, int x, int y)
+{
+    //black
+    if(piece == "p"){
+        return bPawnV + pawnEvalBlack[y][x];
+    } else if (piece =="r"){
+        return bRookV + rookEvalBlack[y][x];
+    }else if (piece =="k"){
+        return  bKnightV + knightEval[y][x];
+    }else if (piece =="b"){
+        return bBishopV + bishopEvalBlack[y][x];
+    }else if (piece =="q"){
+        return bQueenV + evalQueen[y][x];
+    }else if (piece =="k"){
+        return bKingV + kingEvalBlack[y][x];
+    //white
+    }else if(piece == "P"){
+        return wPawnV + pawnEvalWhite[y][x];
+    } else if (piece =="R"){
+        return wRookV + rookEvalWhite[y][x] ;
+    }else if (piece =="K"){
+        return  wKnightV + knightEval[y][x];
+    }else if (piece =="B"){
+        return wBishopV + bishopEvalWhite[y][x];
+    }else if (piece =="Q"){
+        return wQueenV + evalQueen[y][x];
+    }else if (piece =="K"){
+        return wKingV + kingEvalWhite[y][x];
+    }
 }
 
 
@@ -259,29 +271,39 @@ void moveGeneration::returnMove()
 }
 
 float pawnEvalWhite[8][8] =
-    {
-        {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,}
-        {5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0},
-        {1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0},
-        {0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5},
-        {0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0},
-        {0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5},
-        {0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5},
-        {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
-    };
+{
+    {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,}
+    {5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0},
+    {1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0},
+    {0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5},
+    {0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0},
+    {0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5},
+    {0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5},
+    {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
+};
 
-float pawnEvalBlack[8][8] = reverseArray(pawnEvalWhite);
+float pawnEvalBlack[8][8] =
+{
+    { 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,}
+    {-5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0},
+    {-1.0, -1.0, -2.0, -3.0, -3.0, -2.0, -1.0, -1.0},
+    {-0.5, -0.5, -1.0, -2.5, -2.5, -1.0, -0.5, -0.5},
+    { 0.0,  0.0,  0.0, -2.0, -2.0,  0.0,  0.0,  0.0},
+    {-0.5,  0.5,  1.0,  0.0,  0.0,  1.0,  0.5, -0.5},
+    {-0.5, -1.0, -1.0,  2.0,  2.0, -1.0, -1.0, -0.5},
+    { 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
+};
 
 float knightEval[8][8] =
-    {
-        {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
-        {-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0},
-        {-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0},
-        {-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0},
-        {-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0},
-        {-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0},
-        {-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0},
-        {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
+{
+    {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
+    {-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0},
+    {-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0},
+    {-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0},
+    {-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0},
+    {-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0},
+    {-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0},
+    {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
 };
 
 float bishopEvalWhite[8][8] = {

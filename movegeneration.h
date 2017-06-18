@@ -15,7 +15,7 @@ public:
 
 private:
 
-    //generate moves
+//generate moves
     void blackPawn(int x, int y);
     void whitePawn(int x, int y);
     void rook(int x, int y);
@@ -24,15 +24,20 @@ private:
     void queen(int x, int y);
     void king(int x, int y);
 
-    //Move calculations
+//Move calculations
     int calculateBestMove();
-    int getPieceValue(std::string piece, int x, int y);
-    int evaluateBoard();
+
+    //find total board values
+    float evaluateBoard();
+    //pice values and abs val for black and white
+    float getPieceValue(std::string piece, int x, int y);
+    float getAbsoluteValue((std::string piece, int x, int y);
+
 
     //Piece evaluation arrays
 
 
-    //moves into vector %4
+//moves into vector %4
     void pushMoves(int x, int y, int x2, int y2);
 };
 
