@@ -27,13 +27,15 @@ SOURCES += \
         main.cpp \
     tile.cpp \
     Pieces.cpp \
-    movegeneration.cpp
+    movegeneration.cpp \
+    ai_logic.cpp
 
 HEADERS += \
     tile.h \
     externs.h \
     Pieces.h \
-    movegeneration.h
+    movegeneration.h \
+    ai_logic.h
 
 FORMS += \
         mainwindow.ui

@@ -8,7 +8,7 @@
 #include <externs.h>
 #include <iostream>
 
-//create an item array to to represent chess board tiles
+//create an object array to to represent chess board tiles
 Tile * rect[8][8];
 
 // number of half turns
@@ -22,7 +22,7 @@ int numberOfPieceMoved = 0;
 int tempx, tempy, tempx2, tempy2;
 
 //whether ai is on  //FUTURE and which side it's playing
-int aiOn = 0;
+int aiOn = 1;
 
 
 //color piece arrays

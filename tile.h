@@ -4,6 +4,7 @@
 
 #include <QLabel>
 #include <movegeneration.h>
+#include "ai_logic.h"
 
 class Tile : public QLabel
 {
@@ -30,7 +31,7 @@ public:
     //color tiles
     void tileDisplay();
 
-    void aiTurn();
+    void aiTurn(Tile *temp);
 
 };
 

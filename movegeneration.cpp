@@ -1,128 +1,12 @@
 #include "movegeneration.h"
 
-//value spots for pieces
-float pawnEvalWhite[8][8] =
-{
-    {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
-    {5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0},
-    {1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0},
-    {0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5},
-    {0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0},
-    {0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5},
-    {0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5},
-    {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
-};
-
-float pawnEvalBlack[8][8] =
-{
-    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0},
-    {0.5, 1.0, 1.0,-2.0,-2.0, 1.0, 1.0,0.5},
-    {0.5,-0.5,-1.0, 0.0, 0.0,-1.0,-0.5,0.5},
-    {0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0,0.0},
-    {0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5,0.5},
-    {1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0,1.0},
-    {5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0,5.0},
-    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0}
-
-};
 
 
-float knightEval[8][8] =
-{
-    {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
-    {-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0},
-    {-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0},
-    {-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0},
-    {-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0},
-    {-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0},
-    {-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0},
-    {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
-};
 
-float bishopEvalWhite[8][8] = {
-    { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0},
-    { -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
-    { -1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0},
-    { -1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0},
-    { -1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0},
-    { -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0},
-    { -1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0},
-    { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0}
-};
 
-float bishopEvalBlack[8][8] = {
-    {-2.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-2.0},
-    {-1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5,-1.0},
-    {-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,-1.0},
-    {-1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0,-1.0},
-    {-1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5,-1.0},
-    {-1.0, 0.0, 0.5, 1.0, 1.0, 0.5, 0.0,-1.0},
-    {-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
-    {-2.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-2.0}
-};
 
-float rookEvalWhite[8][8] = {
-    {  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
-    {  0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    {  0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0}
-};
 
-float rookEvalBlack[8][8] = {
-    { 0.0,0.0,0.0,0.5,0.5,0.0,0.0, 0.0},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    { 0.5,1.0,1.0,1.0,1.0,1.0,1.0, 0.5},
-    { 0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0.0}
-};
 
-float evalQueen[8][8] = {
-    { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0},
-    { -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
-    { -1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
-    { -0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
-    {  0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
-    { -1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
-    { -1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0},
-    { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0}
-};
-
-float kingEvalWhite[8][8] = {
-
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0},
-    { -1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0},
-    {  2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0},
-    {  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0}
-};
-
-float kingEvalBlack[8][8] = {
-
-    {2.0 , 3.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0},
-    {2.0 , 2.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0},
-    {-1.0,-2.0,-2.0,-2.0,-2.0,-2.0,-2.0,-1.0},
-    {-2.0,-3.0,-3.0,-4.0,-4.0,-3.0,-3.0,-2.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0}
-};
-
-//vector of all possible moves for one side
-std::vector<int> possibleMoves;
-
-// ai values for best possible move once computed
-int aiX, aiY, aiX1, aiY1;
 
 //ai piece values white then black
 int wPawnV = 10, wRookV = 50, wKnightV = 30, wBishopV = 30, wQueenV = 90, wKingV = 900;
@@ -151,7 +35,23 @@ moveGeneration::moveGeneration()
     }
 }
 
+void moveGeneration::ugly_moves()
+{
+    std::string temp, temp1, temp2, temp3, temp4;
+    for(int i = 0; i < possibleMoves.size(); i+=4){
+        temp = std::to_string(possibleMoves[i]);
+        temp1 = std::to_string(possibleMoves[i+1]);
+        temp2 = std::to_string(possibleMoves[i+2]);
+        temp3 = std::to_string(possibleMoves[i+3]);
+        temp4 = temp + temp1 + temp2 + temp3;
+        if(temp4.length()==4){
+            neatMoves.push_back(temp4);
+        }
 
+    }
+
+
+}
 
 void moveGeneration::blackPawn(int x, int y)
 {
@@ -301,76 +201,6 @@ void moveGeneration::king(int x, int y)
     //down left
     pushMoves(x, y, x-1, y+1);
 }
-
-int moveGeneration::calculateBestMove()
-{
-
-}
-
-float moveGeneration::evaluateBoard()
-{
-    //finding score of board
-    int totalEvaluation = 0;
-
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
-            totalEvaluation += getPieceValue(boardArr[i][j], i, j);
-        }
-    }
-    return totalEvaluation;
-}
-
-
-
-
-float moveGeneration::getPieceValue(std::string piece, int x, int y)
-{
-
-    if(piece == " "){
-        return 0;
-    }
-    float absoluteValue = getAbsoluteValue(piece, x, y);
-
-    if(piece == "P" || piece == "R" || piece == "N" || piece == "B" || piece == "K" || piece == "Q"){
-        return absoluteValue;
-    } else {
-        return -absoluteValue;
-    }
-
-}
-
-float moveGeneration::getAbsoluteValue(std::string piece, int x, int y)
-{
-    //black
-    if(piece == "p"){
-        return bPawnV + pawnEvalBlack[y][x];
-    } else if (piece =="r"){
-        return bRookV + rookEvalBlack[y][x];
-    }else if (piece =="k"){
-        return  bKnightV + knightEval[y][x];
-    }else if (piece =="b"){
-        return bBishopV + bishopEvalBlack[y][x];
-    }else if (piece =="q"){
-        return bQueenV + evalQueen[y][x];
-    }else if (piece =="k"){
-        return bKingV + kingEvalBlack[y][x];
-    //white
-    }else if(piece == "P"){
-        return wPawnV + pawnEvalWhite[y][x];
-    } else if (piece =="R"){
-        return wRookV + rookEvalWhite[y][x] ;
-    }else if (piece =="K"){
-        return  wKnightV + knightEval[y][x];
-    }else if (piece =="B"){
-        return wBishopV + bishopEvalWhite[y][x];
-    }else if (piece =="Q"){
-        return wQueenV + evalQueen[y][x];
-    }else if (piece =="K"){
-        return wKingV + kingEvalWhite[y][x];
-    }
-}
-
-
 
 void moveGeneration::pushMoves(int x, int y, int x2, int y2){
     possibleMoves.push_back(x);

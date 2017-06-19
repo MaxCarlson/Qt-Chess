@@ -13,6 +13,9 @@ extern QWidget *myWidget;
 
 Tile *click1;
 
+Tile *aiClick;
+Tile *aiClick1;
+
 // NOTE!!!!!
 //Castling doesn't move the rook on the GUI only on the array of the board
 
@@ -21,12 +24,15 @@ void Tile::mousePressEvent(QMouseEvent * event){
     moveChecking(this, ++count);
 
     //debugging stuff
+
     for(int i = 0; i < 8; i++){
         for(int j =0; j < 8; j++){
             std::cout << boardArr[i][j] << " " ;
         }
         std::cout << std::endl;
     }
+
+
 }
 
 bool Tile::moveChecking(Tile *temp, int countC){
@@ -63,15 +69,11 @@ bool Tile::moveChecking(Tile *temp, int countC){
             tempy = click1->row;
             tempx2 = temp->col;
             tempy2 = temp->row;
-            //give coordinates of origin and possible landing
+            //give coordinates of piece origin and possible landing
             isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
             //check if input coordinates are a valid move for piece and player
             if(isValid->whichPiece() == true){
-                //replace moved piece with a space and move piece
-                //std::string tempPiece = boardArr[tempy2][tempx2];
-                //boardArr[tempy2][tempx2] = tempPiece;
-                //boardArr[tempy][tempx] = " ";
 
                 //switch Qwidget values on origin and spot piece landed
                 click1->piece=0;
@@ -94,7 +96,7 @@ bool Tile::moveChecking(Tile *temp, int countC){
                 count = 0;
 
                 if(aiOn == 1){
-                    aiTurn();
+                    aiTurn(temp);
                 }
 
 
@@ -109,9 +111,77 @@ bool Tile::moveChecking(Tile *temp, int countC){
     
 }
 
-void Tile::aiTurn(){
-    moveGeneration *newMove = new moveGeneration;
+void Tile::aiTurn(Tile *temp){
+    int aiIsThinking = 1;
 
+    Ai_Logic *newMove = new Ai_Logic;
+
+    while(aiIsThinking == 1){
+        newMove->calculateBestMove();
+
+
+        //ready coordinates to give to Pieces
+        tempx = aiX;
+        tempy = aiY;
+        tempx2 = aiX1;
+        tempy2 = aiY1;
+        //give coordinates of piece origin and possible landing
+        isValid->coordinates(tempx, tempy, tempx2, tempy2);
+
+        //check if input coordinates are a valid move for piece and player
+        if(isValid->whichPiece() == true){
+
+
+            //aiClick = new Tile();
+            aiClick = rect[tempy][tempx];
+            aiClick1 = new Tile();
+
+            //simulating ai clicking start piece
+            aiClick->row = tempx;
+            aiClick->col = tempy;
+            //aiClick->pieceColor = rect[tempx][tempy].pieceColor;
+
+            //simulating ai clicking landing spot
+            aiClick1->row = tempx2;
+            aiClick1->col = tempy2;
+
+            //tile color corrections
+            aiClick -> tileColor=(tempx+tempy)%2;
+            aiClick1 -> tileColor=(tempx2+tempx2)%2;
+
+
+            //switch Qwidget values on origin and spot piece landed
+            aiClick->piece=0;
+            aiClick->pieceName = "";
+            aiClick1->piece=1;
+
+            //give moved piece same color at landing
+            for(int k = 0; k < 8; k++){
+                if(boardArr[tempy2][tempx2] == whitePieces[k]){
+                    aiClick1->pieceColor=0;
+
+                } else if (boardArr[tempy2][tempx2] == blackPieces[k]){
+                    aiClick1->pieceColor=1;
+                }
+            }
+
+
+           // aiClick1->pieceColor=aiClick->pieceColor;
+            aiClick1->pieceName=boardArr[tempy2][tempx2];
+
+            //display piece having moved
+            aiClick->display(aiClick->pieceName);
+            aiClick1->display(aiClick->pieceName);
+
+            //make sure tile color is correct
+            aiClick->tileDisplay();
+            aiClick1->tileDisplay();
+
+            turns++;
+            count = 0;
+            aiIsThinking = 0;
+        }
+    }
 
 }
 
