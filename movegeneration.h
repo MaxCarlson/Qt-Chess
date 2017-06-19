@@ -31,7 +31,7 @@ private:
     float evaluateBoard();
     //pice values and abs val for black and white
     float getPieceValue(std::string piece, int x, int y);
-    float getAbsoluteValue((std::string piece, int x, int y);
+    float getAbsoluteValue(std::string piece, int x, int y);
 
 
     //Piece evaluation arrays
@@ -39,6 +39,7 @@ private:
 
 //moves into vector %4
     void pushMoves(int x, int y, int x2, int y2);
+
 };
 
 #endif // MOVEGENERATION_H

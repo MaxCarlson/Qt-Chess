@@ -1225,7 +1225,7 @@ bool Pieces::whiteRook(){
 
 bool Pieces::blackRook(){
     int distance;
-    bool pieceOn = false;
+    //bool pieceOn = false;
     //vertical only test
     if(x1 == x2 && y1 != y2){
         distance = y1-y2;

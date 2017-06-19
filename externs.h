@@ -37,4 +37,18 @@ extern int wPawnV, wRookV, wKnightV, wBishopV, wQueenV, wKingV;
 
 extern int bPawnV, bRookV, bKnightV, bBishopV, bQueenV, bKingV;
 
+//value spots for pieces
+/*
+extern float pawnEvalWhite[8][8];
+extern float pawnEvalBlack[8][8];
+extern float knightEval[8][8];
+extern float bishopEvalWhite[8][8];
+extern float bishopEvalBlack[8][8];
+extern float rookEvalWhite[8][8];
+extern float rookEvalBlack[8][8];
+extern float evalQueen[8][8];
+extern float kingEvalWhite[8][8];
+extern float kingEvalBlack[8][8];
+*/
+
 #endif // EXTERNS_H
