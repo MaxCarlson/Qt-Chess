@@ -22,7 +22,6 @@ void Tile::mousePressEvent(QMouseEvent * event){
     moveChecking(this, ++count);
 
     //debugging stuff
-
     for(int i = 0; i < 8; i++){
         for(int j =0; j < 8; j++){
             std::cout << boardArr[i][j] << " " ;
@@ -113,16 +112,21 @@ void Tile::aiTurn(Tile *temp){
     int aiIsThinking = 1;
 
     Ai_Logic *newMove = new Ai_Logic;
+    newMove->calculateBestMove();
 
+   //rook disapears before here
+
+    int tester = 0;
     while(aiIsThinking == 1){
-        newMove->calculateBestMove();
-
-
         //ready coordinates to give to Pieces
-        tempx = aiX;
-        tempy = aiY;
-        tempx2 = aiX1;
-        tempy2 = aiY1;
+        std::string bMove = best_moves[tester];
+        tempx = (int)bMove[0]-'0';
+        tempy = (int)bMove[1]-'0';
+        tempx2 = (int)bMove[2]-'0';
+        tempy2 = (int)bMove[3]-'0';
+        //increment up incase best move doesnt work
+        tester ++;
+
         //give coordinates of piece origin and possible landing
         isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
@@ -137,7 +141,7 @@ void Tile::aiTurn(Tile *temp){
             aiClick1 = ::rect[tempy2][tempx2];
 
             //switch piece values on origin and spot piece landed
-            aiClick->piece=0;
+            aiClick->piece = 0;
             aiClick1->piece = 1;
 
             //give moved piece same color at landing

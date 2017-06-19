@@ -1,4 +1,5 @@
 #include "movegeneration.h"
+#include <iostream>
 
 
 
@@ -50,6 +51,23 @@ void moveGeneration::ugly_moves()
 
     }
 
+
+}
+
+float moveGeneration::testBoardValue(int x, int y, int x2, int y2)
+{
+    //store two pieces at board before change state
+    std::string storePiece = boardArr[y][x], storePiece1 = boardArr[y2][x2];
+    boardArr[y][x] = " ";
+    boardArr[y2][x2] = storePiece;
+
+
+}
+
+void moveGeneration::undo_move(int x, int y, int x2, int y2)
+{
+    boardArr[y][x] = storePiece;
+    boardArr[y2][x2] = storePiece1;
 
 }
 

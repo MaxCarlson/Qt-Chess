@@ -1,6 +1,7 @@
 #ifndef MOVEGENERATION_H
 #define MOVEGENERATION_H
 #include "externs.h"
+#include "ai_logic.h"
 
 #include <string>
 
@@ -18,6 +19,12 @@ public:
 
 //make vector of %4 moves into array of string moves
     void ugly_moves();
+
+//test board state
+    float testBoardValue(int x, int y, int x2, int y2);
+
+//and return value
+    void undo_move(int x, int y, int x2, int y2);
 
 //more readable moves
     std::vector<std::string> neatMoves;

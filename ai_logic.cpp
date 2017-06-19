@@ -2,9 +2,16 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <iostream>
 
 // ai values for best possible move once computed
 int aiX, aiY, aiX1, aiY1;
+
+//vector of best moves
+std::vector<std::string>best_moves;
+
+//to store pieces while changing board temp
+std::string storePiece, storePiece1;
 
 Ai_Logic::Ai_Logic()
 {
@@ -19,23 +26,51 @@ int Ai_Logic::calculateBestMove()
     genMoves->ugly_moves();
     std::vector<std::string> possible_moves = genMoves->neatMoves;
 
-    //random move
-    srand (time(NULL));
-    int randomMove = rand() % possible_moves.size() + 1;
 
-    std::string zMove = possible_moves[randomMove];
+    //for moves to compete against
+    float bestValue = -9999;
 
-    aiX = (int)zMove[0]-'0';
-    aiY = (int)zMove[1]-'0';
-    aiX1 = (int)zMove[2]-'0';
-    aiY1 = (int)zMove[3]-'0';
+    //ROOK DISAPEAR ERROR HAPPENS HERE!!!!!!
+
+    //compare moves
+    for(int i = 0; i < possible_moves.size(); i++){
+        //change board,
+        genMoves->testBoardValue(aiX, aiY, aiX1, aiY1);
+
+        //test it's value and store it and test if white or black,
+        float tempValue;
+        if(turns%2 == 0){
+            tempValue = evaluateBoard();
+        }else {
+            tempValue = -evaluateBoard();
+        }
+
+        //change board back
+        genMoves->undo_move(aiX, aiY, aiX1, aiY1);
+
+        //if move is better then the best one store it
+        if(tempValue> bestValue){
+            bestValue = tempValue;
+            best_moves.push_back(possible_moves[i]);
+
+        }
+
+    }
+    //debugging stuff
+    for(int i = 0; i < 8; i++){
+        for(int j =0; j < 8; j++){
+            std::cout << boardArr[i][j] << " " ;
+        }
+        std::cout << std::endl;
+    }
+
 
 }
 
 float Ai_Logic::evaluateBoard()
 {
     //finding score of board
-    int totalEvaluation = 0;
+    float totalEvaluation = 0;
 
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
@@ -187,7 +222,7 @@ float Ai_Logic::getAbsoluteValue(std::string piece, int x, int y)
         return bPawnV + pawnEvalBlack[y][x];
     } else if (piece =="r"){
         return bRookV + rookEvalBlack[y][x];
-    }else if (piece =="k"){
+    }else if (piece =="n"){
         return  bKnightV + knightEval[y][x];
     }else if (piece =="b"){
         return bBishopV + bishopEvalBlack[y][x];
@@ -200,7 +235,7 @@ float Ai_Logic::getAbsoluteValue(std::string piece, int x, int y)
         return wPawnV + pawnEvalWhite[y][x];
     } else if (piece =="R"){
         return wRookV + rookEvalWhite[y][x] ;
-    }else if (piece =="K"){
+    }else if (piece =="N"){
         return  wKnightV + knightEval[y][x];
     }else if (piece =="B"){
         return wBishopV + bishopEvalWhite[y][x];
@@ -208,5 +243,7 @@ float Ai_Logic::getAbsoluteValue(std::string piece, int x, int y)
         return wQueenV + evalQueen[y][x];
     }else if (piece =="K"){
         return wKingV + kingEvalWhite[y][x];
+    } else {
+        return 0;
     }
 }

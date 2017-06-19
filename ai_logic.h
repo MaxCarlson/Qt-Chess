@@ -17,14 +17,18 @@ public:
 
     std::vector<std::string> possible_moves;
 
+    //find board values
+    static float evaluateBoard();
+
+    //peice values and abs val for black and white
+    static float getPieceValue(std::string piece, int x, int y);
+    static float getAbsoluteValue(std::string piece, int x, int y);
+
 private:
 
 
-    //find total board values
-    float evaluateBoard();
-    //pice values and abs val for black and white
-    float getPieceValue(std::string piece, int x, int y);
-    float getAbsoluteValue(std::string piece, int x, int y);
+
+
 };
 
 #endif // AI_LOGIC_H
