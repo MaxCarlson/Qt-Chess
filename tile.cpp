@@ -13,8 +13,6 @@ extern QWidget *myWidget;
 
 Tile *click1;
 
-Tile *aiClick;
-Tile *aiClick1;
 
 // NOTE!!!!!
 //Castling doesn't move the rook on the GUI only on the array of the board
@@ -131,32 +129,19 @@ void Tile::aiTurn(Tile *temp){
         //check if input coordinates are a valid move for piece and player
         if(isValid->whichPiece() == true){
 
+            Tile *aiClick;
+            Tile *aiClick1;
 
-            //aiClick = new Tile();
-            aiClick = rect[tempy][tempx];
-            aiClick1 = new Tile();
+            //give Tile objects same value as rect[y][x]'s
+            aiClick = ::rect[tempy][tempx];
+            aiClick1 = ::rect[tempy2][tempx2];
 
-            //simulating ai clicking start piece
-            aiClick->row = tempx;
-            aiClick->col = tempy;
-            //aiClick->pieceColor = rect[tempx][tempy].pieceColor;
-
-            //simulating ai clicking landing spot
-            aiClick1->row = tempx2;
-            aiClick1->col = tempy2;
-
-            //tile color corrections
-            aiClick -> tileColor=(tempx+tempy)%2;
-            aiClick1 -> tileColor=(tempx2+tempx2)%2;
-
-
-            //switch Qwidget values on origin and spot piece landed
+            //switch piece values on origin and spot piece landed
             aiClick->piece=0;
-            aiClick->pieceName = "";
-            aiClick1->piece=1;
+            aiClick1->piece = 1;
 
             //give moved piece same color at landing
-            for(int k = 0; k < 8; k++){
+            for(int k = 0; k < 7; k++){
                 if(boardArr[tempy2][tempx2] == whitePieces[k]){
                     aiClick1->pieceColor=0;
 
@@ -166,12 +151,13 @@ void Tile::aiTurn(Tile *temp){
             }
 
 
-           // aiClick1->pieceColor=aiClick->pieceColor;
+            //give piece landing spot correct piece name
+            aiClick->pieceName = " ";
             aiClick1->pieceName=boardArr[tempy2][tempx2];
 
             //display piece having moved
             aiClick->display(aiClick->pieceName);
-            aiClick1->display(aiClick->pieceName);
+            aiClick1->display(aiClick1->pieceName);
 
             //make sure tile color is correct
             aiClick->tileDisplay();

@@ -118,6 +118,7 @@ void chessBoard(QWidget *baseWidget, Tile *rect[8][8]){
             rect[i][j]->tileDisplay();
             rect[i][j]->setGeometry(boardX,boardY,64,64);
 
+
             //rect[i][j]->setScaledContents(true);
 
             boardX += 64;
