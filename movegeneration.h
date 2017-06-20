@@ -43,6 +43,8 @@ private:
 //moves into vector %4
     void pushMoves(int x, int y, int x2, int y2);
 
+//white or black opponent check
+    bool whiteOrBlack(std::string tmpPiece, int x, int y);
 };
 
 #endif // MOVEGENERATION_H

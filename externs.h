@@ -29,8 +29,7 @@ extern int aiOn;
 //vector holding all ai moves
 extern std::vector<int> possibleMoves;
 
-//ai initial x,y and final xy of possible return move
-extern int aiX, aiY, aiX1, aiY1;
+
 //ai piece values
 // white then black
 extern int wPawnV, wRookV, wKnightV, wBishopV, wQueenV, wKingV;
@@ -42,5 +41,8 @@ extern std::vector<std::string> best_moves;
 
 //to store pieces while testing best moves
 extern std::string storePiece, storePiece1;
+
+//ai initial x,y and final xy of possible return move
+//extern int aiX, aiY, aiX1, aiY1; NOT NEEDED?
 
 #endif // EXTERNS_H

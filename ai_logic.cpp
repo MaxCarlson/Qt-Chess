@@ -4,14 +4,10 @@
 #include <time.h>
 #include <iostream>
 
-// ai values for best possible move once computed
-int aiX, aiY, aiX1, aiY1;
 
 //vector of best moves
 std::vector<std::string>best_moves;
 
-//to store pieces while changing board temp
-std::string storePiece, storePiece1;
 
 Ai_Logic::Ai_Logic()
 {
@@ -26,6 +22,8 @@ int Ai_Logic::calculateBestMove()
     genMoves->ugly_moves();
     std::vector<std::string> possible_moves = genMoves->neatMoves;
 
+    // ai temp values for passing to testBoardValues for assessing a board position
+    int aiX, aiY, aiX1, aiY1;
 
     //for moves to compete against
     float bestValue = -9999;
@@ -34,6 +32,12 @@ int Ai_Logic::calculateBestMove()
 
     //compare moves
     for(int i = 0; i < possible_moves.size(); i++){
+        std::string tempMove = possible_moves[i];
+        aiX = (int)tempMove[0]-'0';
+        aiY = (int)tempMove[1]-'0';
+        aiX1 = (int)tempMove[2]-'0';
+        aiY1 = (int)tempMove[3]-'0';
+
         //change board,
         genMoves->testBoardValue(aiX, aiY, aiX1, aiY1);
 
@@ -49,7 +53,7 @@ int Ai_Logic::calculateBestMove()
         genMoves->undo_move(aiX, aiY, aiX1, aiY1);
 
         //if move is better then the best one store it
-        if(tempValue> bestValue){
+        if(tempValue > bestValue){
             bestValue = tempValue;
             best_moves.push_back(possible_moves[i]);
 
