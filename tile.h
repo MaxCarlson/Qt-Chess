@@ -31,7 +31,7 @@ public:
     //color tiles
     void tileDisplay();
 
-    void aiTurn(Tile *temp);
+    void aiTurn();
 
 };
 

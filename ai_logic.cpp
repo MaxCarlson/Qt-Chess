@@ -60,14 +60,8 @@ int Ai_Logic::calculateBestMove()
         }
 
     }
-    //debugging stuff
-    for(int i = 0; i < 8; i++){
-        for(int j =0; j < 8; j++){
-            std::cout << boardArr[i][j] << " " ;
-        }
-        std::cout << std::endl;
-    }
-
+    //clearing vector for test remove later once one move can be generated
+    possible_moves.clear();
 
 }
 

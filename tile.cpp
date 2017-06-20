@@ -93,7 +93,7 @@ bool Tile::moveChecking(Tile *temp, int countC){
                 count = 0;
 
                 if(aiOn == 1){
-                    aiTurn(temp);
+                    aiTurn();
                 }
 
 
@@ -108,7 +108,7 @@ bool Tile::moveChecking(Tile *temp, int countC){
     
 }
 
-void Tile::aiTurn(Tile *temp){
+void Tile::aiTurn(){
     int aiIsThinking = 1;
 
     Ai_Logic *newMove = new Ai_Logic;
@@ -130,8 +130,14 @@ void Tile::aiTurn(Tile *temp){
         //give coordinates of piece origin and possible landing
         isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
+        //TESTESTESTESTEst
+        boardArr[tempy2][tempx2] = boardArr[tempy][tempx];
+        boardArr[tempy][tempx] = " ";
+
         //check if input coordinates are a valid move for piece and player
         //if(isValid->whichPiece() == true){
+            //clearing vector for test remove later once one move can be generated
+            best_moves.clear();
 
             Tile *aiClick;
             Tile *aiClick1;
@@ -155,9 +161,10 @@ void Tile::aiTurn(Tile *temp){
             }
 
 
+
             //give piece landing spot correct piece name
             aiClick->pieceName = " ";
-            aiClick1->pieceName=boardArr[tempy2][tempx2];
+            aiClick1->pieceName = boardArr[tempy2][tempx2];
 
             //display piece having moved
             aiClick->display(aiClick->pieceName);

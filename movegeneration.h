@@ -32,8 +32,8 @@ public:
 private:
 
 //generate moves   
-    void blackPawn(int x, int y);
     void whitePawn(int x, int y);
+    void blackPawn(int x, int y);
     void rook(int x, int y);
     void knight(int x, int y);
     void bishop(int x, int y);
@@ -70,6 +70,7 @@ private:
     void diagonalM(int x, int y, char wb);
     void knightM(int x, int y, char wb);
     void kingM(int x, int y, char wb);
+
 };
 
 #endif // MOVEGENERATION_H

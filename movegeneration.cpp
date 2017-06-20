@@ -17,23 +17,45 @@ moveGeneration::moveGeneration()
 {
 
     //ai is black ~ possibly replace player moves set too
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
-            if(boardArr[i][j] == "p"){
-                blackPawn(j , i);
-            }else if(boardArr[i][j] == "r"){
-                rook(j , i);
-            } else if(boardArr[i][j] == "n"){
-                knight(j, i);
-            }else if(boardArr[i][j] == "b"){
-                bishop(j, i);
-            } else if(boardArr[i][j] == "q"){
-                queen(j, i);
-            } else if(boardArr[i][j] == "k"){
-                king(j, i);
+    if(turns % 2 == 0){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(boardArr[i][j] == "P"){
+                    whitePawn(j , i);
+                }else if(boardArr[i][j] == "R"){
+                    rook(j , i);
+                } else if(boardArr[i][j] == "N"){
+                    knight(j, i);
+                }else if(boardArr[i][j] == "B"){
+                    bishop(j, i);
+                } else if(boardArr[i][j] == "Q"){
+                    queen(j, i);
+                } else if(boardArr[i][j] == "K"){
+                    king(j, i);
+                }
+            }
+        }
+    } else if (turns % 2 == 1){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(boardArr[i][j] == "p"){
+                    blackPawn(j , i);
+                }else if(boardArr[i][j] == "r"){
+                    rook(j , i);
+                } else if(boardArr[i][j] == "n"){
+                    knight(j, i);
+                }else if(boardArr[i][j] == "b"){
+                    bishop(j, i);
+                } else if(boardArr[i][j] == "q"){
+                    queen(j, i);
+                } else if(boardArr[i][j] == "k"){
+                    king(j, i);
+                }
             }
         }
     }
+
+
 }
 
 void moveGeneration::ugly_moves()
@@ -100,6 +122,10 @@ void moveGeneration::blackPawn(int x, int y)
             pushMoves(x, y, x+1, y+1);
         }
     }
+
+}
+
+void moveGeneration::whitePawn(int x, int y){
 
 }
 
@@ -180,53 +206,53 @@ void moveGeneration::knight(int x, int y)
     //clockwise starting at up up right
     //up right
     if(x < 7 && y > 1){
-        if(safetyCheck(x, y, x+1, y -2) == true){
+        if(safetyCheck(x, y, x+1, y -2) == true && whiteOrBlack(boardArr[y-2][x+1], x+1, y-2) == true){
             pushMoves(x, y, x+1, y -2);
         }
     }
 
     if(x < 6 && y > 0){
-        if(safetyCheck(x, y, x+2, y - 1) == true){
+        if(safetyCheck(x, y, x+2, y - 1) == true && whiteOrBlack(boardArr[y-1][x+2], x+2, y-1) == true){
             pushMoves(x, y, x+2, y - 1);
         }
     }
 
     //down right
     if(x < 6 && y < 7){
-        if(safetyCheck(x, y, x+2, y + 1) == true){
+        if(safetyCheck(x, y, x+2, y + 1) == true && whiteOrBlack(boardArr[y+1][x+2], x+2, y+1) == true){
             pushMoves(x, y, x+2, y + 1);
         }
     }
 
     if(x < 7 && y < 6){
-        if(safetyCheck(x, y, x+1, y + 2) == true){
+        if(safetyCheck(x, y, x+1, y + 2) == true && whiteOrBlack(boardArr[y+2][x+1], x+1, y+2) == true){
             pushMoves(x, y, x+1, y + 2 );
         }
     }
 
     //down left
     if(x > 0 && y < 6){
-        if(safetyCheck(x, y, x-1, y + 2) == true){
+        if(safetyCheck(x, y, x-1, y + 2) == true && whiteOrBlack(boardArr[y+2][x-1], x-1, y+2) == true){
             pushMoves(x, y, x-1, y + 2);
         }
     }
 
     if(x > 1 && y < 7){
-        if(safetyCheck(x, y, x-2, y + 1) == true){
+        if(safetyCheck(x, y, x-2, y + 1) == true && whiteOrBlack(boardArr[y+1][x-2], x-2, y+1) == true){
             pushMoves(x, y, x-2, y + 1);
         }
     }
 
     //up left
     if(x > 1 && y > 0){
-        if(safetyCheck(x, y, x-2, y -1) == true){
-            pushMoves(x, y, x-2, y -1);
+        if(safetyCheck(x, y, x-2, y - 1) == true && whiteOrBlack(boardArr[y-1][x-2], x-2, y-1) == true){
+            pushMoves(x, y, x-2, y - 1);
         }
     }
 
     if(x > 0 && y > 1){
-        if(safetyCheck(x, y, x+1, y - 2) == true){
-            pushMoves(x, y, x+1, y - 2);
+        if(safetyCheck(x, y, x-1, y - 2) == true && whiteOrBlack(boardArr[y-2][x-1], x-1, y-2) == true){
+            pushMoves(x, y, x-1, y - 2);
         }
     }
 
