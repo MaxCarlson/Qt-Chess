@@ -177,6 +177,58 @@ void moveGeneration::rook(int x, int y)
 
 void moveGeneration::knight(int x, int y)
 {
+    //clockwise starting at up up right
+    //up right
+    if(x < 7 && y > 1){
+        if(safetyCheck(x, y, x+1, y -2) == true){
+            pushMoves(x, y, x+1, y -2);
+        }
+    }
+
+    if(x < 6 && y > 0){
+        if(safetyCheck(x, y, x+2, y - 1) == true){
+            pushMoves(x, y, x+2, y - 1);
+        }
+    }
+
+    //down right
+    if(x < 6 && y < 7){
+        if(safetyCheck(x, y, x+2, y + 1) == true){
+            pushMoves(x, y, x+2, y + 1);
+        }
+    }
+
+    if(x < 7 && y < 6){
+        if(safetyCheck(x, y, x+1, y + 2) == true){
+            pushMoves(x, y, x+1, y + 2 );
+        }
+    }
+
+    //down left
+    if(x > 0 && y < 6){
+        if(safetyCheck(x, y, x-1, y + 2) == true){
+            pushMoves(x, y, x-1, y + 2);
+        }
+    }
+
+    if(x > 1 && y < 7){
+        if(safetyCheck(x, y, x-2, y + 1) == true){
+            pushMoves(x, y, x-2, y + 1);
+        }
+    }
+
+    //up left
+    if(x > 1 && y > 0){
+        if(safetyCheck(x, y, x-2, y -1) == true){
+            pushMoves(x, y, x-2, y -1);
+        }
+    }
+
+    if(x > 0 && y > 1){
+        if(safetyCheck(x, y, x+1, y - 2) == true){
+            pushMoves(x, y, x+1, y - 2);
+        }
+    }
 
 }
 
