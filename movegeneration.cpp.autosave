@@ -177,7 +177,47 @@ void moveGeneration::rook(int x, int y)
 
 void moveGeneration::knight(int x, int y)
 {
-
+    //up left
+    if(x1-2 == x2 && y1-1 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    } else if(x1-1 == x2 && y1-2 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    }
+    //up right
+    if(x1+2 == x2 && y1-1 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    } else if(x1+1 == x2 && y1-2 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    }
+    //down left
+    if(x1-2 == x2 && y1+1 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    } else if(x1-1 == x2 && y1+2 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    }
+    //down right
+    if(x1+2 == x2 && y1+1 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    } else if(x1+1 == x2 && y1+2 == y2){
+        boardArr[y1][x1] = " ";
+        boardArr[y2][x2] = "N";
+        return true;
+    }
+    return false;
 }
 
 void moveGeneration::bishop(int x, int y)

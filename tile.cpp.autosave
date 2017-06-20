@@ -131,7 +131,7 @@ void Tile::aiTurn(Tile *temp){
         isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
         //check if input coordinates are a valid move for piece and player
-        //if(isValid->whichPiece() == true){
+        if(isValid->whichPiece() == true){
 
             Tile *aiClick;
             Tile *aiClick1;
@@ -171,7 +171,7 @@ void Tile::aiTurn(Tile *temp){
             count = 0;
             aiIsThinking = 0;
         }
-    //}
+    }
 
 }
 
