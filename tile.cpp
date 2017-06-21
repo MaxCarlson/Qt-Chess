@@ -109,86 +109,70 @@ bool Tile::moveChecking(Tile *temp, int countC){
 }
 
 void Tile::aiTurn(){
-    int aiIsThinking = 1;
 
     Ai_Logic *newMove = new Ai_Logic;
     std::string bestMove = newMove->miniMaxRoot(3, true);
 
+    //ready coordinates to give to Pieces
+    //std::string bMove = best_moves[tester];
+    tempx = (int)bestMove[0]-'0';
+    tempy = (int)bestMove[1]-'0';
+    tempx2 = (int)bestMove[2]-'0';
+    tempy2 = (int)bestMove[3]-'0';
 
-    //int tester = best_moves.size()-1;
-    //while(aiIsThinking == 1){
-        //ready coordinates to give to Pieces
-        //std::string bMove = best_moves[tester];
-        tempx = (int)bestMove[0]-'0';
-        tempy = (int)bestMove[1]-'0';
-        tempx2 = (int)bestMove[2]-'0';
-        tempy2 = (int)bestMove[3]-'0';
-        //increment up incase best move doesnt work
-        //tester --;
+    //swap piece to its desitnation and make prior spot blank
+    boardArr[tempy2][tempx2] = boardArr[tempy][tempx];
+    boardArr[tempy][tempx] = " ";
 
-        //give coordinates of piece origin and possible landing
-        //isValid->coordinates(tempx, tempy, tempx2, tempy2);
+    //create new tile objects to mirror rect tiles of piece and piece landing
+    Tile *aiClick;
+    Tile *aiClick1;
 
-        //TESTESTESTESTEst
-        boardArr[tempy2][tempx2] = boardArr[tempy][tempx];
-        boardArr[tempy][tempx] = " ";
+    //give Tile objects same value as rect[y][x]'s
+    aiClick = ::rect[tempy][tempx];
+    aiClick1 = ::rect[tempy2][tempx2];
 
-
-
-        //check if input coordinates are a valid move for piece and player
-        //if(isValid->whichPiece() == true){
-            //clearing vector for test remove later once one move can be generated
-            //best_moves.clear();
-
-            Tile *aiClick;
-            Tile *aiClick1;
-
-            //give Tile objects same value as rect[y][x]'s
-            aiClick = ::rect[tempy][tempx];
-            aiClick1 = ::rect[tempy2][tempx2];
-
-            //switch piece values on origin and spot piece landed
-            aiClick->piece = 0;
-            aiClick1->piece = 1;
+    //switch piece values on origin and spot piece landed
+    aiClick->piece = 0;
+    aiClick1->piece = 1;
 
 
-            //give moved piece same color at landing
-            for(int k = 0; k < 7; k++){
-                if(boardArr[tempy2][tempx2] == whitePieces[k]){
-                    aiClick1->pieceColor=0;
+    //give moved piece same color at landing
+    for(int k = 0; k < 7; k++){
+        if(boardArr[tempy2][tempx2] == whitePieces[k]){
+            aiClick1->pieceColor=0;
 
-                } else if (boardArr[tempy2][tempx2] == blackPieces[k]){
-                    aiClick1->pieceColor=1;
-                }
-            }
-
-            //give piece landing spot correct piece name
-            aiClick->pieceName = " ";
-            aiClick1->pieceName = boardArr[tempy2][tempx2];
-
-            //display piece having moved
-            aiClick->display(aiClick->pieceName);
-            aiClick1->display(aiClick1->pieceName);
-
-            //make sure tile color is correct
-            aiClick->tileDisplay();
-            aiClick1->tileDisplay();
-
-            turns++;
-            count = 0;
-
-
-            /*
-             * for(int k = 0; k < 8; k++){
-            for(int j = 0; j < 8; j++){
-                std::cout << boardArr[k][j];
-            }
-            std::cout << std::endl;
+        } else if (boardArr[tempy2][tempx2] == blackPieces[k]){
+            aiClick1->pieceColor=1;
         }
-        */
+    }
 
-        //}
-    //}
+    //give piece landing spot correct piece name
+    aiClick->pieceName = " ";
+    aiClick1->pieceName = boardArr[tempy2][tempx2];
+
+    //display piece having moved
+    aiClick->display(aiClick->pieceName);
+    aiClick1->display(aiClick1->pieceName);
+
+    //make sure tile color is correct
+    aiClick->tileDisplay();
+    aiClick1->tileDisplay();
+
+    //increment turns, ready next click for user
+    turns++;
+    count = 0;
+
+
+    /*
+    //FOR TESTING
+    for(int k = 0; k < 8; k++){
+        for(int j = 0; j < 8; j++){
+            std::cout << boardArr[k][j];
+        }
+        std::cout << std::endl;
+    }
+    */
 
 }
 

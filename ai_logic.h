@@ -34,6 +34,9 @@ private:
     void undo_move1();
     void undo_move2();
 
+    //counts number of piece postitions tried
+    int positionCount = 0;
+
 
 };
 

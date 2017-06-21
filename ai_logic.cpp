@@ -8,11 +8,13 @@
 //best overall move as calced
 std::string bestMove;
 
+//holds board state before any moves or trys
 std::string board1[8][8];
+//holds state of initial board + 1 move
 std::string board2[8][8];
 
-//counts number of piece postitions tried
-int positionCount = 0;
+
+
 
 
 
@@ -26,6 +28,7 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
     //generate all possible moves for one turn // TEST Just create movegen object access move gen from func ugly_moves
     moveGeneration *genMoves = new moveGeneration;
 
+    //Store state of the board before any moves of the Ai turn have been done
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             board1[i][j] = boardArr[i][j];
@@ -59,22 +62,23 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
         aiX1 = (int)tempMove[2]-'0';
         aiY1 = (int)tempMove[3]-'0';
 
-        //change board,
-        //genMoves->testBoardValue(aiX, aiY, aiX1, aiY1);
+        //change board to move in set of first moves
         boardArr[aiY1][aiX1] = boardArr[aiY][aiX];
         boardArr[aiY][aiX] = " ";
 
-         for(int k = 0; k < 8; k++){
-             for(int j = 0; j < 8; j++){
-                 board2[k][j] = boardArr[k][j];
-             }
-         }
+        //Store state of board after one of the first moves
+        //so it can be un-done at the end of the recursive miniMax function,
+        //each time to try a new move from the inital moves (possible_moves)
+        for(int k = 0; k < 8; k++){
+            for(int j = 0; j < 8; j++){
+                board2[k][j] = boardArr[k][j];
+            }
+        }
 
         //test it's value and store it and test if white or black,
         float tempValue = miniMax(depth -1, -10000, 10000, ! isMaximisingPlayer);
 
-        //change board back
-        //genMoves->undo_move1();
+        //Change board to state it was in before all testing of turn
         undo_move1();
 
         //if move is better then the best one store it
@@ -127,38 +131,29 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             y = (int)tempMove[1]-'0';
             x1 = (int)tempMove[2]-'0';
             y1 = (int)tempMove[3]-'0';
-            //test board
-            //newGenMoves->testBoardValue(x, y, x1, y1);
+
+
+            //set board to test move value
             boardArr[y1][x1] = boardArr[y][x];
             boardArr[y][x] = " ";
 
             //recursively test best move
             bestTempMove = std::max(bestTempMove, miniMax(depth-1, alpha, beta,  ! isMaximisingPlayer));
+
             //undo board
-            //newGenMoves->undo_move2();
             undo_move2();
 
             //alpha beta pruning
             alpha = std::max(alpha, bestTempMove);
 
             if(beta <= alpha){
-                for(int k = 0; k < 8; k++){
-                    for(int j = 0; j < 8; j++){
-                        std::cout << boardArr[k][j];
-                    }
-                    std::cout << std::endl;
-                }
+
                 future_possible_moves.clear();
                 return bestTempMove;
             }
 
         }
-        for(int k = 0; k < 8; k++){
-            for(int j = 0; j < 8; j++){
-                std::cout << boardArr[k][j];
-            }
-            std::cout << std::endl;
-        }
+
 
         future_possible_moves.clear();
         return bestTempMove;
@@ -176,21 +171,21 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             y = (int)tempMove[1]-'0';
             x1 = (int)tempMove[2]-'0';
             y1 = (int)tempMove[3]-'0';
-            //test board
-            //newGenMoves->testBoardValue(x, y, x1, y1);
+
+            //set board to test move value
             boardArr[y1][x1] = boardArr[y][x];
             boardArr[y][x] = " ";
 
             //recursively test best move
             bestTempMove = std::min(bestTempMove, miniMax(depth-1, alpha, beta, ! isMaximisingPlayer));
+
             //undo board
-            newGenMoves->undo_move2();
+            undo_move2();
 
             //alpha beta pruning
             alpha = std::min(alpha, bestTempMove);
 
             if(beta <= alpha){
-
 
                 //std::cout << whiteMoves << std::endl;
                 future_possible_moves.clear();
@@ -200,8 +195,6 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
         }
 
         //std::cout << whiteMoves << std::endl;
-
-
         future_possible_moves.clear();
         return bestTempMove;
 
@@ -210,6 +203,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 }
 
 void Ai_Logic::undo_move1(){
+    //for undoing all test moves
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             boardArr[i][j] = board1[i][j];
@@ -218,6 +212,7 @@ void Ai_Logic::undo_move1(){
 }
 
 void Ai_Logic::undo_move2(){
+    //for undoing only the test moves after the first
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             boardArr[i][j] = board2[i][j];
@@ -300,7 +295,7 @@ float Ai_Logic::getPieceValue(std::string piece, int x, int y)
     float absoluteValue = getAbsoluteValue(piece, x, y);
 
     //return negative value if piece black, posative if white
-    if(piece == "P" || piece == "R" || piece == "N" || piece == "B" || piece == "K" || piece == "Q"){
+    if(piece == "P" || piece == "R" || piece == "N" || piece == "B" || piece == "Q" || piece == "K"){
         return absoluteValue;
     } else {
         return -absoluteValue;
@@ -430,30 +425,30 @@ float Ai_Logic::getAbsoluteValue(std::string piece, int x, int y)
     //find which piece it is and return value
     //black
     if(piece == "p"){
-        return bPawnV + pawnEvalBlack[y][x];
+        return 10 + pawnEvalBlack[y][x];
     } else if (piece =="r"){
-        return bRookV + rookEvalBlack[y][x];
+        return 50 + rookEvalBlack[y][x];
     }else if (piece =="n"){
-        return  bKnightV + knightEval[y][x];
+        return  30 + knightEval[y][x];
     }else if (piece =="b"){
-        return bBishopV + bishopEvalBlack[y][x];
+        return 30 + bishopEvalBlack[y][x];
     }else if (piece =="q"){
-        return bQueenV + evalQueen[y][x];
+        return 90 + evalQueen[y][x];
     }else if (piece =="k"){
-        return bKingV + kingEvalBlack[y][x];
+        return 900 + kingEvalBlack[y][x];
     //white
     }else if(piece == "P"){
-        return wPawnV + pawnEvalWhite[y][x];
+        return 10 + pawnEvalWhite[y][x];
     } else if (piece =="R"){
-        return wRookV + rookEvalWhite[y][x] ;
+        return 50 + rookEvalWhite[y][x] ;
     }else if (piece =="N"){
-        return  wKnightV + knightEval[y][x];
+        return  30 + knightEval[y][x];
     }else if (piece =="B"){
-        return wBishopV + bishopEvalWhite[y][x];
+        return 30 + bishopEvalWhite[y][x];
     }else if (piece =="Q"){
-        return wQueenV + evalQueen[y][x];
+        return 90 + evalQueen[y][x];
     }else if (piece =="K"){
-        return wKingV + kingEvalWhite[y][x];
+        return 900 + kingEvalWhite[y][x];
     } else {
         return 0;
     }

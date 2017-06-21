@@ -28,9 +28,9 @@ extern int aiOn;
 
 //ai piece values
 // white then black
-extern int wPawnV, wRookV, wKnightV, wBishopV, wQueenV, wKingV;
+//extern int wPawnV, wRookV, wKnightV, wBishopV, wQueenV, wKingV;
 
-extern int bPawnV, bRookV, bKnightV, bBishopV, bQueenV, bKingV;
+//extern int bPawnV, bRookV, bKnightV, bBishopV, bQueenV, bKingV;
 
 
 //to store pieces while testing best moves

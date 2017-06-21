@@ -10,8 +10,8 @@ std::string storePiece, storePiece1, storePiece2, storePiece3;
 
 
 //ai piece values white then black
-int wPawnV = 10, wRookV = 50, wKnightV = 30, wBishopV = 30, wQueenV = 90, wKingV = 900;
-int bPawnV = -10, bRookV = -50, bKnightV = -30, bBishopV = -30, bQueenV = -90, bKingV = -900;
+//int wPawnV = 10, wRookV = 50, wKnightV = 30, wBishopV = 30, wQueenV = 90, wKingV = 900;
+//int bPawnV = -10, bRookV = -50, bKnightV = -30, bBishopV = -30, bQueenV = -90, bKingV = -900;
 
 moveGeneration::moveGeneration()
 {
