@@ -112,9 +112,9 @@ void Tile::aiTurn(){
     int aiIsThinking = 1;
 
     Ai_Logic *newMove = new Ai_Logic;
-    newMove->calculateBestMove();
+    //newMove->calculateBestMove();
 
-
+    bestMove = newMove->miniMaxRoot(3, true);
 
     //int tester = best_moves.size()-1;
     //while(aiIsThinking == 1){

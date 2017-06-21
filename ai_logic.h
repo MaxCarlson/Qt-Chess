@@ -2,6 +2,7 @@
 #define AI_LOGIC_H
 
 #include <string>
+#include <algorithm>
 
 #include "externs.h"
 #include "movegeneration.h"
@@ -24,8 +25,12 @@ public:
     static float getPieceValue(std::string piece, int x, int y);
     static float getAbsoluteValue(std::string piece, int x, int y);
 
-private:
+    //root function for recursive move finiding via minimax
+    std::string miniMaxRoot(int depth, bool isMaximisingPlayer);
 
+    float miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer);
+
+private:
 
 
 

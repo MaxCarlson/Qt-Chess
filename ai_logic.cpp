@@ -18,6 +18,7 @@ Ai_Logic::Ai_Logic()
 
 int Ai_Logic::calculateBestMove()
 {
+
     //generate all possible moves for one turn
     moveGeneration *genMoves = new moveGeneration;
     //generate more readable moves
@@ -30,7 +31,7 @@ int Ai_Logic::calculateBestMove()
     //for moves to compete against
     float bestValue = -9999;
 
-    //ROOK DISAPEAR ERROR HAPPENS HERE!!!!!!
+
 
     //compare moves
     for(int i = 0; i < possible_moves.size(); i++){
@@ -64,7 +65,123 @@ int Ai_Logic::calculateBestMove()
 
     }
     //clearing vector for test remove later once one move can be generated TEST
-    //possible_moves.clear();
+    possible_moves.clear();
+
+}
+
+std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
+{
+
+    //generate all possible moves for one turn
+    moveGeneration *genMoves = new moveGeneration;
+    //generate more readable moves
+    genMoves->ugly_moves();
+
+    //get vector of possible moves for current turn
+    std::vector<std::string> possible_moves = genMoves->neatMoves;
+
+    // ai temp values for passing to testBoardValues for assessing a board position
+    int aiX, aiY, aiX1, aiY1;
+
+    //for moves to compete against
+    float bestMoveValue = -9999;
+
+    //best move to return after all calcs
+    std::string bestMoveFound;
+
+    //compare moves
+    for(int i = 0; i < possible_moves.size(); i++){
+        std::string tempMove = possible_moves[i];
+        aiX = (int)tempMove[0]-'0';
+        aiY = (int)tempMove[1]-'0';
+        aiX1 = (int)tempMove[2]-'0';
+        aiY1 = (int)tempMove[3]-'0';
+
+        //change board,
+        genMoves->testBoardValue(aiX, aiY, aiX1, aiY1);
+
+        //test it's value and store it and test if white or black,
+        float tempValue = miniMax(depth -1, -10000, 10000, !isMaximisingPlayer);
+
+        //change board back
+        genMoves->undo_move(aiX, aiY, aiX1, aiY1);
+
+        //if move is better then the best one store it
+        if(tempValue >= bestMoveValue){
+            bestMoveValue = tempValue;
+            bestMoveFound = tempMove;
+
+        }
+
+    }
+    return bestMoveFound;
+}
+
+float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer)
+{
+    if(depth == 0){
+        if(turns%2 == 0){
+            return evaluateBoard();
+        } else {
+            return -evaluateBoard();
+        }
+    }
+
+    moveGeneration *newGenMoves = new moveGeneration;
+    newGenMoves->ugly_moves();
+    std::vector<std::string> future_possible_moves = newGenMoves->neatMoves;
+    int x, y, x1, y1;
+
+    if(isMaximisingPlayer){
+        float bestTempMove = -9999;
+        for(int i = 0; i < future_possible_moves.size(); i++){
+            //change board accoriding to i possible move
+            std::string tempMove = future_possible_moves[i];
+            x = (int)tempMove[0]-'0';
+            y = (int)tempMove[1]-'0';
+            x1 = (int)tempMove[2]-'0';
+            y1 = (int)tempMove[3]-'0';
+            //test board
+            newGenMoves->testBoardValue(x, y, x1, y1);
+            //recursively test best move
+            bestTempMove = std::max(bestTempMove, miniMax(depth -1, alpha, beta, !isMaximisingPlayer));
+            //undo board
+            newGenMoves->undo_move(x, y, x1, y1);
+            alpha = std::max(alpha, bestTempMove);
+
+            if(beta <= alpha){
+                return bestTempMove;
+            }
+
+        }
+        return bestTempMove;
+
+
+    } else {
+        float bestTempMove = 9999;
+        for(int i = 0; i < future_possible_moves.size(); i++){
+            //change board accoriding to i possible move
+            std::string tempMove = future_possible_moves[i];
+            x = (int)tempMove[0]-'0';
+            y = (int)tempMove[1]-'0';
+            x1 = (int)tempMove[2]-'0';
+            y1 = (int)tempMove[3]-'0';
+            //test board
+            newGenMoves->testBoardValue(x, y, x1, y1);
+            //recursively test best move
+            bestTempMove = std::min(bestTempMove, miniMax(depth -1, alpha, beta, !isMaximisingPlayer));
+            //undo board
+            newGenMoves->undo_move(x, y, x1, y1);
+            alpha = std::min(alpha, bestTempMove);
+
+            if(beta <= alpha){
+                return bestTempMove;
+            }
+
+        }
+        return bestTempMove;
+
+    }
 
 }
 
@@ -248,3 +365,5 @@ float Ai_Logic::getAbsoluteValue(std::string piece, int x, int y)
         return 0;
     }
 }
+
+
