@@ -263,7 +263,7 @@ void moveGeneration::bishop(int x, int y)
     //up left
     int tmp = y-1;
     for(int i = x-1; i >= 0; i--){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp >= 0){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
@@ -283,7 +283,7 @@ void moveGeneration::bishop(int x, int y)
     //up right
     tmp = y-1;
     for(int i = x+1; i < 8; i++){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp >= 0){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
@@ -304,7 +304,7 @@ void moveGeneration::bishop(int x, int y)
     //down right
     tmp = y + 1;
     for(int i = x+1; i < 8; i++){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp <= 7){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
@@ -324,7 +324,7 @@ void moveGeneration::bishop(int x, int y)
     //down left
     tmp = y + 1;
     for(int i = x-1; i >= 0; i--){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp <= 7){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
@@ -422,13 +422,13 @@ void moveGeneration::queen(int x, int y)
     //up left
     int tmp = y-1;
     for(int i = x-1; i >= 0; i--){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp >= 0){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
             }
 
-        } else if(boardArr[tmp][i] == " "){
+        } else if(boardArr[tmp][i] == " " ){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
 
@@ -442,7 +442,7 @@ void moveGeneration::queen(int x, int y)
     //up right
     tmp = y-1;
     for(int i = x+1; i < 8; i++){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp >= 0){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
@@ -461,7 +461,7 @@ void moveGeneration::queen(int x, int y)
     //down right
     tmp = y + 1;
     for(int i = x+1; i < 8; i++){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp <= 7){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
@@ -480,7 +480,7 @@ void moveGeneration::queen(int x, int y)
     //down left
     tmp = y + 1;
     for(int i = x-1; i >= 0; i--){
-        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true){
+        if(boardArr[tmp][i] != " " && whiteOrBlack(boardArr[tmp][i], i, tmp) == true && tmp <= 7){
             if(safetyCheck(x, y, i, tmp) == true){
                 pushMoves(x, y, i, tmp);
                 break;
@@ -607,10 +607,12 @@ bool moveGeneration::safetyCheck(int x, int y, int x2, int y2)
     //if king is safe return true and reset piece so another move can be tested
     if(isKingSafe() == true){
         undo_move(x, y, x2, y2);
+        resetSafetyBoards();
         return true;
     }
 
     undo_move(x, y, x2, y2);
+    resetSafetyBoards();
     return false;
 }
 

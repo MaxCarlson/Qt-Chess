@@ -42,6 +42,9 @@ extern std::vector<std::string> best_moves;
 //to store pieces while testing best moves
 extern std::string storePiece, storePiece1;
 
+//best move as ai determines
+extern std::string bestMove;
+
 //ai initial x,y and final xy of possible return move
 //extern int aiX, aiY, aiX1, aiY1; NOT NEEDED?
 

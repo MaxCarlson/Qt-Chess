@@ -8,6 +8,8 @@
 //vector of best moves
 std::vector<std::string>best_moves;
 
+//best overall move as calced
+std::string bestMove;
 
 Ai_Logic::Ai_Logic()
 {
@@ -55,13 +57,14 @@ int Ai_Logic::calculateBestMove()
         //if move is better then the best one store it
         if(tempValue > bestValue){
             bestValue = tempValue;
-            best_moves.push_back(possible_moves[i]);
+            bestMove = tempMove;
+            //best_moves.push_back(possible_moves[i]);
 
         }
 
     }
-    //clearing vector for test remove later once one move can be generated
-    possible_moves.clear();
+    //clearing vector for test remove later once one move can be generated TEST
+    //possible_moves.clear();
 
 }
 

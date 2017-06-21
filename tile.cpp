@@ -114,18 +114,18 @@ void Tile::aiTurn(){
     Ai_Logic *newMove = new Ai_Logic;
     newMove->calculateBestMove();
 
-   //rook disapears before here
 
-    int tester = 0;
-    while(aiIsThinking == 1){
+
+    //int tester = best_moves.size()-1;
+    //while(aiIsThinking == 1){
         //ready coordinates to give to Pieces
-        std::string bMove = best_moves[tester];
-        tempx = (int)bMove[0]-'0';
-        tempy = (int)bMove[1]-'0';
-        tempx2 = (int)bMove[2]-'0';
-        tempy2 = (int)bMove[3]-'0';
+        //std::string bMove = best_moves[tester];
+        tempx = (int)bestMove[0]-'0';
+        tempy = (int)bestMove[1]-'0';
+        tempx2 = (int)bestMove[2]-'0';
+        tempy2 = (int)bestMove[3]-'0';
         //increment up incase best move doesnt work
-        tester ++;
+        //tester --;
 
         //give coordinates of piece origin and possible landing
         isValid->coordinates(tempx, tempy, tempx2, tempy2);
@@ -137,7 +137,7 @@ void Tile::aiTurn(){
         //check if input coordinates are a valid move for piece and player
         //if(isValid->whichPiece() == true){
             //clearing vector for test remove later once one move can be generated
-            best_moves.clear();
+            //best_moves.clear();
 
             Tile *aiClick;
             Tile *aiClick1;
@@ -177,7 +177,7 @@ void Tile::aiTurn(){
             turns++;
             count = 0;
             aiIsThinking = 0;
-        }
+        //}
     //}
 
 }
