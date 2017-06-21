@@ -37,12 +37,14 @@ extern int bPawnV, bRookV, bKnightV, bBishopV, bQueenV, bKingV;
 extern std::string storePiece, storePiece1, storePiece2, storePiece3;
 
 //best move as ai determines
-extern std::string bestMove;
+//extern std::string bestMove;
 
 //store board state so it can be undone
 extern std::string board1[8][8];
 
 extern std::string board2[8][8];
+
+extern int turnsTemp;
 
 //ai initial x,y and final xy of possible return move
 //extern int aiX, aiY, aiX1, aiY1; NOT NEEDED?

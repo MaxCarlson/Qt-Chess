@@ -31,7 +31,8 @@ public:
     float miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer);
 
 private:
-
+    void undo_move1();
+    void undo_move2();
 
 
 };

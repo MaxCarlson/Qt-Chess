@@ -112,8 +112,7 @@ void Tile::aiTurn(){
     int aiIsThinking = 1;
 
     Ai_Logic *newMove = new Ai_Logic;
-    bestMove = newMove->miniMaxRoot(3, true);
-
+    std::string bestMove = newMove->miniMaxRoot(3, true);
 
 
     //int tester = best_moves.size()-1;
@@ -128,11 +127,13 @@ void Tile::aiTurn(){
         //tester --;
 
         //give coordinates of piece origin and possible landing
-        isValid->coordinates(tempx, tempy, tempx2, tempy2);
+        //isValid->coordinates(tempx, tempy, tempx2, tempy2);
 
         //TESTESTESTESTEst
         boardArr[tempy2][tempx2] = boardArr[tempy][tempx];
         boardArr[tempy][tempx] = " ";
+
+
 
         //check if input coordinates are a valid move for piece and player
         //if(isValid->whichPiece() == true){
@@ -150,6 +151,7 @@ void Tile::aiTurn(){
             aiClick->piece = 0;
             aiClick1->piece = 1;
 
+
             //give moved piece same color at landing
             for(int k = 0; k < 7; k++){
                 if(boardArr[tempy2][tempx2] == whitePieces[k]){
@@ -159,8 +161,6 @@ void Tile::aiTurn(){
                     aiClick1->pieceColor=1;
                 }
             }
-
-
 
             //give piece landing spot correct piece name
             aiClick->pieceName = " ";
@@ -176,7 +176,17 @@ void Tile::aiTurn(){
 
             turns++;
             count = 0;
-            aiIsThinking = 0;
+
+
+            /*
+             * for(int k = 0; k < 8; k++){
+            for(int j = 0; j < 8; j++){
+                std::cout << boardArr[k][j];
+            }
+            std::cout << std::endl;
+        }
+        */
+
         //}
     //}
 
