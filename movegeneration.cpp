@@ -6,7 +6,7 @@
 
 
 //strings for storing pieces while checking value of board for moves
-std::string storePiece, storePiece1;
+std::string storePiece, storePiece1, storePiece2, storePiece3;
 
 
 //ai piece values white then black
@@ -16,7 +16,11 @@ int bPawnV = -10, bRookV = -50, bKnightV = -30, bBishopV = -30, bQueenV = -90, b
 moveGeneration::moveGeneration()
 {
 
-    //ai is black ~ possibly replace player moves set too
+}
+
+void moveGeneration::genMoves()
+{
+    //ai is black ~ possibly replace player moves set too GEN MOVES
     if(turns % 2 == 0){
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
@@ -54,12 +58,12 @@ moveGeneration::moveGeneration()
             }
         }
     }
-
-
 }
 
 void moveGeneration::ugly_moves()
 {
+
+
     //move moves from a %4 int vector into a string vector containing move info in one slot
     std::string temp, temp1, temp2, temp3, temp4;
     for(int i = 0; i < possibleMoves.size(); i+=4){
@@ -76,7 +80,7 @@ void moveGeneration::ugly_moves()
 
 }
 
-float moveGeneration::testBoardValue(int x, int y, int x2, int y2)
+void moveGeneration::testBoardValue(int x, int y, int x2, int y2)
 {
     //store two pieces at board before change state
     storePiece = boardArr[y][x];
@@ -88,16 +92,26 @@ float moveGeneration::testBoardValue(int x, int y, int x2, int y2)
 
 }
 
-void moveGeneration::undo_move(int x, int y, int x2, int y2)
-{
-    boardArr[y][x] = storePiece;
-    boardArr[y2][x2] = storePiece1;
 
+void moveGeneration::undo_move1(){
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            boardArr[i][j] = board1[i][j];
+        }
+    }
+}
+
+void moveGeneration::undo_move2(){
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            boardArr[i][j] = board2[i][j];
+        }
+    }
 }
 
 void moveGeneration::blackPawn(int x, int y)
 {
-    std::string tx = std::to_string(x), ty = std::to_string(y);
+    //std::string tx = std::to_string(x), ty = std::to_string(y);
     //move forward one
     if(boardArr[y+1][x] == " " && y < 7){
         if(safetyCheck(x, y, x, y+1) == true){
@@ -127,6 +141,30 @@ void moveGeneration::blackPawn(int x, int y)
 
 void moveGeneration::whitePawn(int x, int y){
 
+    //move forward (up) one
+    if(boardArr[y-1][x] == " " && y > 0){
+        if(safetyCheck(x, y, x, y-1) == true){
+            pushMoves(x, y, x, y-1);
+        }
+    }
+    //or two first turn
+    if( y == 6 && boardArr[y-1][x] == " " && boardArr[y-2][x] == " "){
+        if(safetyCheck(x, y, x, y-2) == true){
+            pushMoves(x, y, x, y-2);
+        }
+    }
+    //take out side-wase left
+    if(boardArr[y-1][x-1] != " " && whiteOrBlack(boardArr[y-1][x-1], x-1, y-1) == true && x > 0 && y > 0){
+        if(safetyCheck(x, y, x-1, y-1) == true){
+            pushMoves(x, y, x-1, y-1);
+        }
+    }
+    //right take out
+    if(boardArr[y-1][x+1] != " " && whiteOrBlack(boardArr[y-1][x+1], x+1, y-1) == true && x < 7 && y > 0){
+        if(safetyCheck(x, y, x+1, y-1) == true){
+            pushMoves(x, y, x+1, y-1);
+        }
+    }
 }
 
 void moveGeneration::rook(int x, int y)
@@ -624,7 +662,7 @@ bool moveGeneration::safetyCheck(int x, int y, int x2, int y2)
     //make bool boards all true
     resetSafetyBoards();
     //move piece on board in order to test safety
-    testBoardValue(x, y, x2, y2);
+    testBoardSafe(x, y, x2, y2);
     //mark bool boards with updated piece temp move posititon
     createKingSafteyBoard();
 
@@ -638,6 +676,24 @@ bool moveGeneration::safetyCheck(int x, int y, int x2, int y2)
     undo_move(x, y, x2, y2);
     //resetSafetyBoards();
     return false;
+}
+
+
+void moveGeneration::testBoardSafe(int x, int y, int x2, int y2)
+{
+    //store two pieces at board before change state
+    storePiece2 = boardArr[y][x];
+    storePiece3 = boardArr[y2][x2];
+
+    boardArr[y][x] = " ";
+    boardArr[y2][x2] = storePiece2;
+}
+
+void moveGeneration::undo_move(int x, int y, int x2, int y2)
+{
+   boardArr[y][x] = storePiece2;
+   boardArr[y2][x2] = storePiece3;
+
 }
 
 bool moveGeneration::resetSafetyBoards(){

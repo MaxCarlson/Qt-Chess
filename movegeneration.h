@@ -21,17 +21,24 @@ public:
     void ugly_moves();
 
 //test board state
-    float testBoardValue(int x, int y, int x2, int y2);
+    void testBoardValue(int x, int y, int x2, int y2);
+
 
 //and return value
     void undo_move(int x, int y, int x2, int y2);
 
+    void undo_move1();
+    void undo_move2();
+
 //more readable moves
     std::vector<std::string> neatMoves;
 
+    //TEST GEN AL MOVES FUNC
+    void genMoves();
+
 private:
 
-//generate moves   
+//generate moves      
     void whitePawn(int x, int y);
     void blackPawn(int x, int y);
     void rook(int x, int y);
@@ -49,7 +56,7 @@ private:
 
 //function that puts all the needed functions below in the right order to check if a move is safe
     bool safetyCheck(int x, int y, int x2, int y2);
-
+    void testBoardSafe(int x, int y, int x2, int y2);
 //create bool board to see if move makes king unsafe or not
     void createKingSafteyBoard();
 

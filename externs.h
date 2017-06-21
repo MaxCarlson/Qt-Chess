@@ -26,24 +26,23 @@ extern int count, numberOfPieceMoved;
 // is ai on
 extern int aiOn;
 
-//vector holding all ai moves
-extern std::vector<int> possibleMoves;
-
-
 //ai piece values
 // white then black
 extern int wPawnV, wRookV, wKnightV, wBishopV, wQueenV, wKingV;
 
 extern int bPawnV, bRookV, bKnightV, bBishopV, bQueenV, bKingV;
 
-//vector of best ai moves
-extern std::vector<std::string> best_moves;
 
 //to store pieces while testing best moves
-extern std::string storePiece, storePiece1;
+extern std::string storePiece, storePiece1, storePiece2, storePiece3;
 
 //best move as ai determines
 extern std::string bestMove;
+
+//store board state so it can be undone
+extern std::string board1[8][8];
+
+extern std::string board2[8][8];
 
 //ai initial x,y and final xy of possible return move
 //extern int aiX, aiY, aiX1, aiY1; NOT NEEDED?
