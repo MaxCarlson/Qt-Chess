@@ -137,6 +137,14 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             boardArr[y1][x1] = boardArr[y][x];
             boardArr[y][x] = " ";
 
+            //FOR TESTING
+            //for(int k = 0; k < 8; k++){
+              //  for(int j = 0; j < 8; j++){
+                //    std::cout << boardArr[k][j];
+                //}
+               // std::cout << std::endl;
+            //}
+
             //recursively test best move
             bestTempMove = std::max(bestTempMove, miniMax(depth-1, alpha, beta,  ! isMaximisingPlayer));
 
@@ -183,7 +191,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             undo_move2();
 
             //alpha beta pruning
-            alpha = std::min(alpha, bestTempMove);
+            beta = std::min(beta, bestTempMove);
 
             if(beta <= alpha){
 
