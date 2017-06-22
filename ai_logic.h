@@ -37,7 +37,8 @@ private:
     //counts number of piece postitions tried
     int positionCount = 0;
 
-
+    //attempt to not wipe board state
+    void undoBetterMove(int x, int y, int x1, int y1, std::string piece1, std::string piece2);
 };
 
 #endif // AI_LOGIC_H

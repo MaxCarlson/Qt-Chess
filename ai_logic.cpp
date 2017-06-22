@@ -28,6 +28,9 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
     //generate all possible moves for one turn // TEST Just create movegen object access move gen from func ugly_moves
     moveGeneration *genMoves = new moveGeneration;
 
+    //Move timer for ai
+    clock_t aiMoveTimerStart = clock();
+
     //Store state of the board before any moves of the Ai turn have been done
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
@@ -90,7 +93,10 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
 
     }
 
+    clock_t aiEndMoveTImer = clock();
+
     std::cout << positionCount << std::endl;
+    std::cout << (double) (aiEndMoveTImer - aiMoveTimerStart) / CLOCKS_PER_SEC << " seconds" << std::endl;
     possible_moves.clear();
     return bestMoveFound;
     positionCount = 0;
@@ -133,23 +139,27 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             y1 = (int)tempMove[3]-'0';
 
 
+            //TEST piece recovery in new undo function
+            std::string piece1 = boardArr[y][x], piece2 = boardArr[y1][x1];
+
             //set board to test move value
             boardArr[y1][x1] = boardArr[y][x];
             boardArr[y][x] = " ";
 
-            //FOR TESTING
-            //for(int k = 0; k < 8; k++){
-              //  for(int j = 0; j < 8; j++){
-                //    std::cout << boardArr[k][j];
-                //}
-               // std::cout << std::endl;
-            //}
-
             //recursively test best move
             bestTempMove = std::max(bestTempMove, miniMax(depth-1, alpha, beta,  ! isMaximisingPlayer));
 
+            //FOR TESTING
+            for(int k = 0; k < 8; k++){
+                for(int j = 0; j < 8; j++){
+                    std::cout << boardArr[k][j];
+                }
+                std::cout << std::endl;
+            }
+
             //undo board
-            undo_move2();
+            //undo_move2();
+            undoMove(x, y, x1, y1, piece1, piece2);
 
             //alpha beta pruning
             alpha = std::max(alpha, bestTempMove);
@@ -180,6 +190,9 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             x1 = (int)tempMove[2]-'0';
             y1 = (int)tempMove[3]-'0';
 
+            //TEST piece recovery in new undo function
+            std::string piece1 = boardArr[y][x], piece2 = boardArr[y1][x1];
+
             //set board to test move value
             boardArr[y1][x1] = boardArr[y][x];
             boardArr[y][x] = " ";
@@ -188,7 +201,9 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             bestTempMove = std::min(bestTempMove, miniMax(depth-1, alpha, beta, ! isMaximisingPlayer));
 
             //undo board
-            undo_move2();
+            //undo_move2();
+
+            undoMove(x, y, x1, y1, piece1, piece2);
 
             //alpha beta pruning
             beta = std::min(beta, bestTempMove);
@@ -208,6 +223,12 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
     }
 
+
+}
+
+void Ai_Logic::undoMove(int x, int y, int x1, int y1 , std::string piece1, std::string piece2){ //
+    boardArr[y][x] = piece1;
+    boardArr[y1][x1] = piece2;
 }
 
 void Ai_Logic::undo_move1(){
