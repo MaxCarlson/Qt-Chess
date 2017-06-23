@@ -79,7 +79,7 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
         }
 
         //test it's value and store it and test if white or black,
-        float tempValue = miniMax(depth -1, -10000, 10000, ! isMaximisingPlayer);
+        float tempValue = miniMax(depth -1, -100000, 100000, ! isMaximisingPlayer);
 
         //Change board to state it was in before all testing of turn
         undo_move1();
@@ -112,6 +112,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
     moveGeneration *newGenMoves = new moveGeneration;
 
+
     if(isMaximisingPlayer == true){
         newGenMoves->genMoves();
         newGenMoves->ugly_moves();
@@ -125,11 +126,12 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
     std::vector<std::string> future_possible_moves = newGenMoves->neatMoves;
     newGenMoves->neatMoves.clear();
+    future_possible_moves = sortMoves(future_possible_moves, isMaximisingPlayer);
 
     int x, y, x1, y1;
 
     if(isMaximisingPlayer == true){
-        float bestTempMove = -9999;
+        float bestTempMove = -99999;
         for(int i = 0; i < future_possible_moves.size(); i++){
             //change board accoriding to i possible move
             std::string tempMove = future_possible_moves[i];
@@ -169,7 +171,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
     } else {
 
-        float bestTempMove = 9999;
+        float bestTempMove = 99999;
         for(int i = 0; i < future_possible_moves.size(); i++){
             whiteMoves ++;
 
@@ -214,6 +216,66 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
 }
 
+std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, bool isMaximisingPlayer)
+{
+    //float vector to hold scores
+    std::vector<float> score;
+    int x, y, x1, y1;
+
+    for(int i = 0; i < moves.size(); i++){
+        //change board accoriding to i possible move
+        std::string tempMove = moves[i];
+        x = (int)tempMove[0]-'0';
+        y = (int)tempMove[1]-'0';
+        x1 = (int)tempMove[2]-'0';
+        y1 = (int)tempMove[3]-'0';
+
+        //piece recovery for undo function
+        std::string piece1 = boardArr[y][x], piece2 = boardArr[y1][x1];
+
+        //set board to test move value and move piece
+        boardArr[y1][x1] = boardArr[y][x];
+        boardArr[y][x] = " ";
+
+        //evaluate board and push it to the float vector
+        score.push_back(evaluateBoard(1));
+
+        //undo the move
+        undoMove(x, y, x1, y1, piece1, piece2);
+
+    }
+    std::vector<std::string> newListA, newListB=moves, returnVec;
+    int tmp = moves.size();
+
+    //first few moves only
+    for(int i = 0; i <std::min(6, tmp); i++){
+        float max;
+        int maxLocation=0;
+        if(isMaximisingPlayer == false){
+            max = -100000;
+        } else{
+            max = 100000;
+        }
+        for(int j = 0; j < moves.size(); j++){
+            if(score[j] > max && isMaximisingPlayer == false){
+                max = score[j];
+                maxLocation = j;
+                score[j] = -100000;
+            } else if (score[j] < max && isMaximisingPlayer == true){
+                max = score[j];
+                maxLocation = j;
+                score[j] = 100000;
+            }
+        }
+        newListA.push_back(moves[maxLocation]);
+        newListB.erase(newListB.begin()+maxLocation);
+    }
+    newListA.insert(newListA.end(), newListB.begin(), newListB.end());
+
+    return newListA;
+
+}
+
 void Ai_Logic::undoMove(int x, int y, int x1, int y1 , std::string piece1, std::string piece2){ //
     boardArr[y][x] = piece1;
     boardArr[y1][x1] = piece2;
@@ -224,15 +286,6 @@ void Ai_Logic::undo_move1(){
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             boardArr[i][j] = board1[i][j];
-        }
-    }
-}
-
-void Ai_Logic::undo_move2(){
-    //for undoing only the test moves after the first
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
-            boardArr[i][j] = board2[i][j];
         }
     }
 }
@@ -248,7 +301,8 @@ float Ai_Logic::evaluateBoard(float depth)
             totalEvaluation += getPieceValue(boardArr[i][j], i, j);
         }
     }
-    return totalEvaluation*(depth+1);
+    //return board eval weighted toward a higher depth
+    return totalEvaluation*(0.75*depth+1);
 }
 
 float Ai_Logic::getPieceValue(std::string piece, int x, int y)
@@ -259,7 +313,7 @@ float Ai_Logic::getPieceValue(std::string piece, int x, int y)
     }
     float absoluteValue = getAbsoluteValue(piece, x, y);
 
-    //return negative value if piece black, posative if white
+    //return negative value if piece black, positive if white
     if(piece == "P" || piece == "R" || piece == "N" || piece == "B" || piece == "Q" || piece == "K"){
         return absoluteValue;
     } else {
@@ -387,7 +441,7 @@ float kingEvalBlack[8][8] = {
 
 float Ai_Logic::getAbsoluteValue(std::string piece, int x, int y)
 {
-    //find which piece it is and return value
+    //find which piece it is and return its board value
     //black
     if(piece == "p"){
         return 10 + pawnEvalBlack[y][x];

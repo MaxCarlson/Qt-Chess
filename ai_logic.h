@@ -29,14 +29,18 @@ public:
     float miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer);
 
 private:
+    //change board back only one move
+    void undoMove(int x, int y, int x1, int y1, std::string piece1, std::string piece2);
+    //change board back to before move testing/evaluating state
     void undo_move1();
-    void undo_move2();
+
+    //sort first few moves to increase alpha beta efficiancy
+    std::vector<std::string> sortMoves(std::vector<std::string> moves, bool isMaximisingPlayer);
 
     //counts number of piece postitions tried
     long positionCount = 0;
 
-    //attempt to not wipe board state
-    void undoMove(int x, int y, int x1, int y1, std::string piece1, std::string piece2);
+
 };
 
 #endif // AI_LOGIC_H
