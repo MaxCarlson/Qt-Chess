@@ -79,7 +79,7 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
         }
 
         //test it's value and store it and test if white or black,
-        float tempValue = miniMax(depth -1, -10000, 10000, ! isMaximisingPlayer);
+        float tempValue = miniMax(depth -1, -100000, 100000, ! isMaximisingPlayer);
 
         //Change board to state it was in before all testing of turn
         undo_move1();
@@ -129,7 +129,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
     int x, y, x1, y1;
 
     if(isMaximisingPlayer == true){
-        float bestTempMove = -9999;
+        float bestTempMove = -99999;
         for(int i = 0; i < future_possible_moves.size(); i++){
             //change board accoriding to i possible move
             std::string tempMove = future_possible_moves[i];
@@ -169,7 +169,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
     } else {
 
-        float bestTempMove = 9999;
+        float bestTempMove = 99999;
         for(int i = 0; i < future_possible_moves.size(); i++){
             whiteMoves ++;
 
@@ -228,14 +228,6 @@ void Ai_Logic::undo_move1(){
     }
 }
 
-void Ai_Logic::undo_move2(){
-    //for undoing only the test moves after the first
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
-            boardArr[i][j] = board2[i][j];
-        }
-    }
-}
 
 
 float Ai_Logic::evaluateBoard(float depth)
@@ -248,7 +240,8 @@ float Ai_Logic::evaluateBoard(float depth)
             totalEvaluation += getPieceValue(boardArr[i][j], i, j);
         }
     }
-    return totalEvaluation*(depth+1);
+    //return board eval weighted toward a higher depth
+    return totalEvaluation*(0.75*depth+1);
 }
 
 float Ai_Logic::getPieceValue(std::string piece, int x, int y)
