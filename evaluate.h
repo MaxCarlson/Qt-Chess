@@ -14,6 +14,7 @@ public:
     float getAbsoluteValue(std::string piece, int x, int y);
 
     float getPieceValue(std::string piece, int x, int y);
+private:
 
 
 };
