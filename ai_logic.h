@@ -17,7 +17,7 @@ public:
     std::vector<std::string> possible_moves;
 
     //find board values
-    static float evaluateBoard(float depth);
+    static float evaluateBoard(float depth, int NumberOfMoves);
 
     //peice values and abs val for black and white
     static float getPieceValue(std::string piece, int x, int y);
@@ -26,7 +26,7 @@ public:
     //root function for recursive move finiding via minimax
     std::string miniMaxRoot(int depth, bool isMaximisingPlayer);
 
-    float miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer);
+    float miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer, int numberOfMoves);
 
 private:
     //change board back only one move

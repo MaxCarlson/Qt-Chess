@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
+#include "evaluate.h"
 
 
 //best overall move as calced
@@ -14,7 +15,7 @@ std::string board1[8][8];
 std::string board2[8][8];
 
 
-
+Evaluate *eval = new Evaluate;
 
 
 
@@ -47,6 +48,11 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
     //get vector of possible moves for current turn
     std::vector<std::string> possible_moves = genMoves->neatMoves;
     genMoves->neatMoves.clear();
+    int numberOfMoves = possible_moves.size();
+
+    //sorting not neccasary on first step?????
+    //possible_moves = sortMoves(possible_moves, true);
+
 
     // ai temp values for passing to testBoardValues for assessing a board position
     int aiX, aiY, aiX1, aiY1;
@@ -79,7 +85,7 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
         }
 
         //test it's value and store it and test if white or black,
-        float tempValue = miniMax(depth -1, -100000, 100000, ! isMaximisingPlayer);
+        float tempValue = miniMax(depth -1, -100000, 100000, ! isMaximisingPlayer, numberOfMoves);
 
         //Change board to state it was in before all testing of turn
         undo_move1();
@@ -102,12 +108,12 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
     positionCount = 0;
 }
 
-float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer)
+float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer, int numberOfMoves)
 {
     positionCount ++;
     int whiteMoves = 0;
     if(depth <= 0){
-        return -evaluateBoard(depth);
+        return - eval->evaluateBoard(depth, numberOfMoves);
     }
 
     moveGeneration *newGenMoves = new moveGeneration;
@@ -126,7 +132,10 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
     std::vector<std::string> future_possible_moves = newGenMoves->neatMoves;
     newGenMoves->neatMoves.clear();
+    //sort the best six moves into the first six slots of possible moves, improvmes speed by about 30% avg
     future_possible_moves = sortMoves(future_possible_moves, isMaximisingPlayer);
+
+    numberOfMoves = future_possible_moves.size();
 
     int x, y, x1, y1;
 
@@ -148,7 +157,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             boardArr[y][x] = " ";
 
             //recursively test best move
-            bestTempMove = std::max(bestTempMove, miniMax(depth-1, alpha, beta,  ! isMaximisingPlayer));
+            bestTempMove = std::max(bestTempMove, miniMax(depth-1, alpha, beta,  ! isMaximisingPlayer, numberOfMoves));
 
             //undo move by passing it coordinates and pieces moved
             undoMove(x, y, x1, y1, piece1, piece2);
@@ -190,7 +199,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             boardArr[y][x] = " ";
 
             //recursively test best move
-            bestTempMove = std::min(bestTempMove, miniMax(depth-1, alpha, beta, ! isMaximisingPlayer));
+            bestTempMove = std::min(bestTempMove, miniMax(depth-1, alpha, beta, ! isMaximisingPlayer, numberOfMoves));
 
             //undo move by passing it coordinates and pieces moved
             undoMove(x, y, x1, y1, piece1, piece2);
@@ -238,7 +247,7 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
         boardArr[y][x] = " ";
 
         //evaluate board and push it to the float vector
-        score.push_back(evaluateBoard(1));
+        score.push_back(eval->evaluateBoard(1, 0));
 
         //undo the move
         undoMove(x, y, x1, y1, piece1, piece2);
@@ -251,12 +260,14 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
     for(int i = 0; i <std::min(6, tmp); i++){
         float max;
         int maxLocation=0;
+        //set high low score based on what's good for player being analysed
         if(isMaximisingPlayer == false){
             max = -100000;
         } else{
             max = 100000;
         }
         for(int j = 0; j < moves.size(); j++){
+            //if score is better than max record it's location and remove it from being searched
             if(score[j] > max && isMaximisingPlayer == false){
                 max = score[j];
                 maxLocation = j;
@@ -291,186 +302,6 @@ void Ai_Logic::undo_move1(){
 }
 
 
-float Ai_Logic::evaluateBoard(float depth)
-{
-    //finding score of board
-    float totalEvaluation = 0;
 
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
-            totalEvaluation += getPieceValue(boardArr[i][j], i, j);
-        }
-    }
-    //return board eval weighted toward a higher depth
-    return totalEvaluation*(0.75*depth+1);
-}
-
-float Ai_Logic::getPieceValue(std::string piece, int x, int y)
-{
-    //get value of piece on board
-    if(piece == " "){
-        return 0;
-    }
-    float absoluteValue = getAbsoluteValue(piece, x, y);
-
-    //return negative value if piece black, positive if white
-    if(piece == "P" || piece == "R" || piece == "N" || piece == "B" || piece == "Q" || piece == "K"){
-        return absoluteValue;
-    } else {
-        return -absoluteValue;
-    }
-}
-
-//value spots for pieces
-float pawnEvalWhite[8][8] =
-{
-    {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
-    {5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0},
-    {1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0},
-    {0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5},
-    {0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0},
-    {0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5},
-    {0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5},
-    {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
-};
-
-float pawnEvalBlack[8][8] =
-{
-    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0},
-    {0.5, 1.0, 1.0,-2.0,-2.0, 1.0, 1.0,0.5},
-    {0.5,-0.5,-1.0, 0.0, 0.0,-1.0,-0.5,0.5},
-    {0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0,0.0},
-    {0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5,0.5},
-    {1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0,1.0},
-    {5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0,5.0},
-    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0}
-
-};
-
-
-float knightEval[8][8] =
-{
-    {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
-    {-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0},
-    {-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0},
-    {-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0},
-    {-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0},
-    {-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0},
-    {-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0},
-    {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
-};
-
-float bishopEvalWhite[8][8] = {
-    { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0},
-    { -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
-    { -1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0},
-    { -1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0},
-    { -1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0},
-    { -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0},
-    { -1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0},
-    { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0}
-};
-
-float bishopEvalBlack[8][8] = {
-    {-2.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-2.0},
-    {-1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5,-1.0},
-    {-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,-1.0},
-    {-1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0,-1.0},
-    {-1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5,-1.0},
-    {-1.0, 0.0, 0.5, 1.0, 1.0, 0.5, 0.0,-1.0},
-    {-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,-1.0},
-    {-2.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-2.0}
-};
-
-float rookEvalWhite[8][8] = {
-    {  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
-    {  0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
-    {  0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0}
-};
-
-float rookEvalBlack[8][8] = {
-    { 0.0,0.0,0.0,0.5,0.5,0.0,0.0, 0.0},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    {-0.5,0.0,0.0,0.0,0.0,0.0,0.0,-0.5},
-    { 0.5,1.0,1.0,1.0,1.0,1.0,1.0, 0.5},
-    { 0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0.0}
-};
-
-float evalQueen[8][8] = {
-    { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0},
-    { -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
-    { -1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
-    { -0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
-    {  0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
-    { -1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
-    { -1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0},
-    { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0}
-};
-
-float kingEvalWhite[8][8] = {
-
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
-    { -2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0},
-    { -1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0},
-    {  2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0},
-    {  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0}
-};
-
-float kingEvalBlack[8][8] = {
-
-    {2.0 , 3.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0},
-    {2.0 , 2.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0},
-    {-1.0,-2.0,-2.0,-2.0,-2.0,-2.0,-2.0,-1.0},
-    {-2.0,-3.0,-3.0,-4.0,-4.0,-3.0,-3.0,-2.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0},
-    {-3.0,-4.0,-4.0,-5.0,-5.0,-4.0,-4.0,-3.0}
-};
-
-float Ai_Logic::getAbsoluteValue(std::string piece, int x, int y)
-{
-    //find which piece it is and return its board value
-    //black
-    if(piece == "p"){
-        return 10 + pawnEvalBlack[y][x];
-    } else if (piece =="r"){
-        return 50 + rookEvalBlack[y][x];
-    }else if (piece =="n"){
-        return  30 + knightEval[y][x];
-    }else if (piece =="b"){
-        return 30 + bishopEvalBlack[y][x];
-    }else if (piece =="q"){
-        return 90 + evalQueen[y][x];
-    }else if (piece =="k"){
-        return 900 + kingEvalBlack[y][x];
-    //white
-    }else if(piece == "P"){
-        return 10 + pawnEvalWhite[y][x];
-    } else if (piece =="R"){
-        return 50 + rookEvalWhite[y][x] ;
-    }else if (piece =="N"){
-        return  30 + knightEval[y][x];
-    }else if (piece =="B"){
-        return 30 + bishopEvalWhite[y][x];
-    }else if (piece =="Q"){
-        return 90 + evalQueen[y][x];
-    }else if (piece =="K"){
-        return 900 + kingEvalWhite[y][x];
-    } else {
-        return 0;
-    }
-}
 
 
