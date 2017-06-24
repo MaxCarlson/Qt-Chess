@@ -124,6 +124,7 @@ void Tile::aiTurn(){
     boardArr[tempy2][tempx2] = boardArr[tempy][tempx];
     boardArr[tempy][tempx] = " ";
 
+
     //create new tile objects to mirror rect tiles of piece and piece landing
     Tile *aiClick;
     Tile *aiClick1;

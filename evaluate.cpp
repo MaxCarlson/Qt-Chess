@@ -1,12 +1,16 @@
 #include "evaluate.h"
 
-extern int nWhitePawns, nBlackPawns, nWhiteRooks, nBlackRooks, nWhiteKnights, nBlackKnights;
 
-int knight_adj[9] = { 5, 10, 12, 12, 12,  13,  25,  40, 50};
+
+int knight_adj[9] = { 23, 24, 25, 26, 26,  27,  28,  35, 45 };
 //int knight_adj[9] = { -20, -16, -12, -8, -4,  0,  4,  8, 12};
 
-int rook_adj[9] =   {  70,  63,   57,  50,  35,  20, 15, 10, 10};
+int rook_adj[9] =   { 58, 58, 57, 55, 47, 40, 38, 38, 38 };
 //int rook_adj[9] =   {  15,  12,   9,  6,  3,  0, -3, -6, -9};
+
+int bishop_adj[9] = { 45, 43, 40, 37, 35, 33, 33, 33, 32 };
+
+int nWhitePawns, nBlackPawns, nWhiteRooks, nBlackRooks, nWhiteKnights, nBlackKnights, nWhiteBishops, nBlackBishops;
 
 Evaluate::Evaluate()
 {
@@ -18,43 +22,44 @@ float Evaluate::evaluateBoard(float depth, int NumberOfMoves)
     //finding score of board
     float totalEvaluation = 0;
     //piece counts set to zero
-    int nWhitePawns = 0, nBlackPawns = 0, nWhiteRooks = 0, nBlackRooks = 0, nWhiteKnights = 0, nBlackKnights = 0;
+    nWhitePawns = 0, nBlackPawns = 0, nWhiteRooks = 0, nBlackRooks = 0, nWhiteKnights = 0, nBlackKnights = 0, nWhiteBishops = 0, nBlackBishops = 0;
+
 
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             totalEvaluation += getPieceValue(boardArr[i][j], i, j);
-            //count number of pawns
-            if(boardArr[i][j] == "P"){
-                nWhitePawns+=1;
-            } else if(boardArr[i][j] == "p"){
-                nBlackPawns+=1;
-            } else if(boardArr[i][j] == "R"){
-                nWhiteRooks+=1;
-            } else if(boardArr[i][j] == "r"){
-                nBlackRooks+=1;
-            } else if(boardArr[i][j]=="N"){
-                nWhiteKnights+=1;
-            }else if(boardArr[i][j]=="n"){
-                nBlackKnights+=1;
-            }
-
         }
     }
 
     //knight score number of pawn adjusts
     if(nWhiteKnights > 0){
-        totalEvaluation+= nWhiteKnights*knight_adj[nWhitePawns];
+        totalEvaluation += nWhiteKnights*knight_adj[nWhitePawns];
     }
     if(nBlackKnights > 0){
-        totalEvaluation+= -(nBlackKnights*knight_adj[nBlackPawns]);
+        totalEvaluation -= nBlackKnights*knight_adj[nBlackPawns];
     }
 
     //rook adjust based on pawn number
     if(nWhiteRooks > 0){
-        totalEvaluation+= nWhiteRooks*rook_adj[nWhitePawns];
+        totalEvaluation += nWhiteRooks*rook_adj[nWhitePawns];
     }
-    if(nBlackRooks>0){
-        totalEvaluation+= -(nBlackRooks*rook_adj[nBlackPawns]);
+    if(nBlackRooks > 0){
+        totalEvaluation -= nBlackRooks*rook_adj[nBlackPawns];
+    }
+
+
+    //bishop adjusts
+    if(nWhiteBishops >= 2){
+        totalEvaluation += 3.5;
+        totalEvaluation += nWhiteBishops*bishop_adj[nWhitePawns];
+    } else {
+        totalEvaluation += nWhiteBishops*bishop_adj[nWhitePawns];
+    }
+    if(nBlackBishops >= 2){
+        totalEvaluation -= 3.5;
+        totalEvaluation -= nBlackBishops*bishop_adj[nBlackPawns];
+    } else {
+        totalEvaluation -= nBlackBishops*bishop_adj[nBlackPawns];
     }
 
 
@@ -62,7 +67,7 @@ float Evaluate::evaluateBoard(float depth, int NumberOfMoves)
     totalEvaluation *= (float)1+(0.01)*NumberOfMoves;
 
     //weight a higher depth more
-    totalEvaluation *= 0.75*(depth+1);
+    totalEvaluation *= 0.95*(depth+1);
 
     //return board eval
     return totalEvaluation;
@@ -76,13 +81,62 @@ float Evaluate::getPieceValue(std::string piece, int x, int y)
     }
     float absoluteValue = getAbsoluteValue(piece, x, y);
 
-    //return negative value if piece black, positive if white
+    //return negetive value if piece black, positive if white
     if(piece == "P" || piece == "R" || piece == "N" || piece == "B" || piece == "Q" || piece == "K"){
+        //count number of pawns
+        if(piece == "P"){
+            nWhitePawns+=1;
+            absoluteValue += evalPawn(x, y, absoluteValue, piece);
+        } else if(piece == "R"){
+            nWhiteRooks+=1;
+
+        } else if(piece=="N"){
+            nWhiteKnights+=1;
+
+        } else if(piece=="B"){
+            nWhiteBishops+=1;
+
+        }else if(piece=="Q"){
+
+
+        }else if(piece=="K"){
+
+        }
+
         return absoluteValue;
+
     } else {
+        if(piece == "p"){
+            absoluteValue += evalPawn(x, y, absoluteValue, piece);
+            nBlackPawns+=1;
+        }else if(piece == "r"){
+
+            nBlackRooks+=1;
+        } else if(piece=="n"){
+
+            nBlackKnights+=1;
+        } else if(piece=="b"){
+
+            nBlackBishops+=1;
+        }else if(piece=="q"){
+
+
+        } else if(piece=="k"){
+
+        }
         return -absoluteValue;
     }
+
 }
+
+float Evaluate::evalPawn(int x, int y, float score, std::string piece)
+{
+    if(x == 0 || x == 7){
+        score-=1.5;
+    }
+    return score;
+}
+
 
 //value spots for pieces
 float pawnEvalWhite[8][8] =
@@ -209,11 +263,12 @@ float Evaluate::getAbsoluteValue(std::string piece, int x, int y)
     if(piece == "p"){
         return 10 + pawnEvalBlack[y][x];
     } else if (piece =="r"){
+        //adjusts for knight and rook done in evaluate board due to needing pawn numbers for value
         return 0 + rookEvalBlack[y][x];
     }else if (piece =="n"){
         return 0 + knightEval[y][x];
     }else if (piece =="b"){
-        return 30 + bishopEvalBlack[y][x];
+        return 0 + bishopEvalBlack[y][x];
     }else if (piece =="q"){
         return 90 + evalQueen[y][x];
     }else if (piece =="k"){
@@ -226,7 +281,7 @@ float Evaluate::getAbsoluteValue(std::string piece, int x, int y)
     }else if (piece =="N"){
         return 0 + knightEval[y][x];
     }else if (piece =="B"){
-        return 30 + bishopEvalWhite[y][x];
+        return 0 + bishopEvalWhite[y][x];
     }else if (piece =="Q"){
         return 90 + evalQueen[y][x];
     }else if (piece =="K"){

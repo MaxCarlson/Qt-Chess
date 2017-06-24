@@ -40,6 +40,8 @@ private:
     //counts number of piece postitions tried
     long positionCount = 0;
 
+    void queenHasMoved();
+
 
 };
 

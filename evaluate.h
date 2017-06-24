@@ -15,6 +15,12 @@ public:
 
     float getPieceValue(std::string piece, int x, int y);
 private:
+    float evalPawn(int x, int y, float score, std::string piece);
+    float evalRook(int x, int y);
+
+
+
+
 
 
 };

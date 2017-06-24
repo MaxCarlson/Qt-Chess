@@ -49,4 +49,10 @@ extern int turnsTemp;
 //ai initial x,y and final xy of possible return move
 //extern int aiX, aiY, aiX1, aiY1; NOT NEEDED?
 
+//number of pieces
+extern int nWhitePawns, nBlackPawns, nWhiteRooks, nBlackRooks, nWhiteKnights, nBlackKnights, nWhiteBishops, nBlackBishops;
+
+//queens have moved
+//extern bool wQueenMoved, bQueenMoved;
+
 #endif // EXTERNS_H

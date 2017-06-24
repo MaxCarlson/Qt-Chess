@@ -104,8 +104,9 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
     std::cout << positionCount << std::endl;
     std::cout << (double) (aiEndMoveTImer - aiMoveTimerStart) / CLOCKS_PER_SEC << " seconds" << std::endl;
     possible_moves.clear();
-    return bestMoveFound;
     positionCount = 0;
+    return bestMoveFound;
+
 }
 
 float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingPlayer, int numberOfMoves)
@@ -286,6 +287,8 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
     return newListA;
 
 }
+
+
 
 void Ai_Logic::undoMove(int x, int y, int x1, int y1 , std::string piece1, std::string piece2){ //
     boardArr[y][x] = piece1;
