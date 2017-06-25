@@ -2,13 +2,13 @@
 
 
 
-int knight_adj[9] = { 23, 24, 25, 26, 26,  27,  28,  35, 45 };
+int knight_adj[9] = { 25, 26, 26, 27, 28,  30,  30,  35, 40 };
 //int knight_adj[9] = { -20, -16, -12, -8, -4,  0,  4,  8, 12};
 
-int rook_adj[9] =   { 58, 58, 57, 55, 47, 40, 38, 38, 38 };
+int rook_adj[9] =   { 58, 57, 55, 53, 47, 45, 44, 43, 42 };
 //int rook_adj[9] =   {  15,  12,   9,  6,  3,  0, -3, -6, -9};
 
-int bishop_adj[9] = { 45, 43, 40, 37, 35, 33, 33, 33, 32 };
+int bishop_adj[9] = { 40, 39, 38, 37, 35, 32, 31, 31, 30 };
 
 int nWhitePawns, nBlackPawns, nWhiteRooks, nBlackRooks, nWhiteKnights, nBlackKnights, nWhiteBishops, nBlackBishops;
 

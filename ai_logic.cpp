@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
-#include "evaluate.h"
+
 
 
 //best overall move as calced
@@ -63,6 +63,9 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
     //best move to return after all calcs
     std::string bestMoveFound;
 
+    //if small number of root moves increase search depth
+    depth = modifyDepth(depth, numberOfMoves);
+
     //compare moves
     for(int i = 0; i < possible_moves.size(); i++){
         std::string tempMove = possible_moves[i];
@@ -113,6 +116,8 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 {
     positionCount ++;
     int whiteMoves = 0;
+
+
     if(depth <= 0){
         return - eval->evaluateBoard(depth, numberOfMoves);
     }
@@ -132,7 +137,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
 
     std::vector<std::string> future_possible_moves = newGenMoves->neatMoves;
-    newGenMoves->neatMoves.clear();
+    //newGenMoves->neatMoves.clear();
     //sort the best six moves into the first six slots of possible moves, improvmes speed by about 30% avg
     future_possible_moves = sortMoves(future_possible_moves, isMaximisingPlayer);
 
@@ -168,14 +173,14 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
             if(beta <= alpha){
 
-                future_possible_moves.clear();
+                //future_possible_moves.clear();
                 return bestTempMove;
             }
 
         }
 
 
-        future_possible_moves.clear();
+        //future_possible_moves.clear();
         return bestTempMove;
 
 
@@ -211,14 +216,14 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
             if(beta <= alpha){
 
                 //std::cout << whiteMoves << std::endl;
-                future_possible_moves.clear();
+                //future_possible_moves.clear();
                 return bestTempMove;
             }
 
         }
 
         //std::cout << whiteMoves << std::endl;
-        future_possible_moves.clear();
+        //future_possible_moves.clear();
         return bestTempMove;
 
     }
@@ -286,6 +291,17 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
 
     return newListA;
 
+}
+
+int Ai_Logic::modifyDepth(int depth, int numberOfMoves)
+{
+    if(numberOfMoves <= 15){
+        depth += 1;
+    }
+    if(numberOfMoves <= 6){
+        depth += 1;
+    }
+    return depth;
 }
 
 

@@ -6,6 +6,7 @@
 
 #include "externs.h"
 #include "movegeneration.h"
+#include "evaluate.h"
 
 
 
@@ -42,6 +43,7 @@ private:
 
     void queenHasMoved();
 
+    int modifyDepth(int depth, int numberOfMoves);
 
 };
 
