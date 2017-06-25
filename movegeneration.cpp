@@ -653,6 +653,7 @@ bool moveGeneration::whiteOrBlack(std::string tmpPiece, int x, int y)
 void moveGeneration::resetPossibleMoves()
 {
     possibleMoves.clear();
+    neatMoves.clear();
 }
 
 //King safety check functions below this line

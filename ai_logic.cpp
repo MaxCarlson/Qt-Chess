@@ -17,7 +17,7 @@ std::string board2[8][8];
 
 Evaluate *eval = new Evaluate;
 
-
+moveGeneration *newGenMoves = new moveGeneration;
 
 Ai_Logic::Ai_Logic()
 {
@@ -27,7 +27,7 @@ Ai_Logic::Ai_Logic()
 std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
 {
     //generate all possible moves for one turn // TEST Just create movegen object access move gen from func ugly_moves
-    moveGeneration *genMoves = new moveGeneration;
+
 
     //Move timer for ai
     clock_t aiMoveTimerStart = clock();
@@ -40,18 +40,19 @@ std::string Ai_Logic::miniMaxRoot(int depth, bool isMaximisingPlayer)
     }
 
     //generate first possible initial moves
-    genMoves->genMoves();
+    newGenMoves->genMoves();
 
     //Make moves readable
-    genMoves->ugly_moves();
+    newGenMoves->ugly_moves();
 
     //get vector of possible moves for current turn
-    std::vector<std::string> possible_moves = genMoves->neatMoves;
-    genMoves->neatMoves.clear();
+    std::vector<std::string> possible_moves = newGenMoves->neatMoves;
+    newGenMoves->resetPossibleMoves();
+
     int numberOfMoves = possible_moves.size();
 
     //sorting not neccasary on first step?????
-    //possible_moves = sortMoves(possible_moves, true);
+    possible_moves = sortMoves(possible_moves, true);
 
 
     // ai temp values for passing to testBoardValues for assessing a board position
@@ -122,7 +123,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
         return - eval->evaluateBoard(depth, numberOfMoves);
     }
 
-    moveGeneration *newGenMoves = new moveGeneration;
+    //moveGeneration *newGenMoves = new moveGeneration;
 
 
     if(isMaximisingPlayer == true){
@@ -137,7 +138,7 @@ float Ai_Logic::miniMax(float depth, float alpha, float beta, bool isMaximisingP
 
 
     std::vector<std::string> future_possible_moves = newGenMoves->neatMoves;
-    //newGenMoves->neatMoves.clear();
+    newGenMoves->resetPossibleMoves();
     //sort the best six moves into the first six slots of possible moves, improvmes speed by about 30% avg
     future_possible_moves = sortMoves(future_possible_moves, isMaximisingPlayer);
 
@@ -236,8 +237,9 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
     //float vector to hold scores
     std::vector<float> score;
     int x, y, x1, y1;
+    int tmp = moves.size();
 
-    for(int i = 0; i < moves.size(); i++){
+    for(int i = 0; i < std::min(6,tmp); i++){
         //change board accoriding to i possible move
         std::string tempMove = moves[i];
         x = (int)tempMove[0]-'0';
@@ -260,7 +262,7 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
 
     }
     std::vector<std::string> newListA, newListB=moves, returnVec;
-    int tmp = moves.size();
+
 
     //first few moves only
     for(int i = 0; i <std::min(6, tmp); i++){
@@ -272,7 +274,7 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
         } else{
             max = 100000;
         }
-        for(int j = 0; j < moves.size(); j++){
+        for(int j = 0; j < tmp; j++){
             //if score is better than max record it's location and remove it from being searched
             if(score[j] > max && isMaximisingPlayer == false){
                 max = score[j];
