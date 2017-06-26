@@ -29,7 +29,8 @@ SOURCES += \
     Pieces.cpp \
     movegeneration.cpp \
     ai_logic.cpp \
-    evaluate.cpp
+    evaluate.cpp \
+    bitboards.cpp
 
 HEADERS += \
     tile.h \
@@ -37,7 +38,8 @@ HEADERS += \
     Pieces.h \
     movegeneration.h \
     ai_logic.h \
-    evaluate.h
+    evaluate.h \
+    bitboards.h
 
 FORMS += \
         mainwindow.ui

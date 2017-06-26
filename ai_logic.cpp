@@ -239,7 +239,7 @@ std::vector<std::string> Ai_Logic::sortMoves(std::vector<std::string> moves, boo
     int x, y, x1, y1;
     int tmp = moves.size();
 
-    for(int i = 0; i < std::min(6,tmp); i++){
+    for(int i = 0; i < tmp; i++){
         //change board accoriding to i possible move
         std::string tempMove = moves[i];
         x = (int)tempMove[0]-'0';
