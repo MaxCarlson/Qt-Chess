@@ -31,10 +31,31 @@ public:
 
     //process moves into ints
 
+    //process moves for each color into a string of moves
+    std::string possibleMovesW(U64 empty, U64 wpawns);
+    std::string possibleMovesB();
 
-    //pawn movement bitboards
+    //white moves
     std::string possiblePW(U64 wpawns, U64 EmptyTiles);
+    std::string possibleWB(U64 wbishop, U64 whitepieces, U64 blackking);
 
+
+
+    //black moves
+    std::string possiblePB(U64 bpawns, U64 EmptyTiles);
+    std::string possibleBB(U64 bbishop, U64 blackpiecs, U64 whiteking);
+
+
+    U64 ReverseBits(U64 input);
+    //slider moves
+    //up + down + left + right without friendly / enemy check
+    U64 horizVert(int s);
+
+    //both diagonals
+    U64 DAndAntiDMoves(int s);
+
+    //helper funtction to draw out bitboards like chess boards
+    void drawBB(U64 board);
 private:
 
 };
