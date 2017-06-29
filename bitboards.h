@@ -58,7 +58,17 @@ public:
         std::string pinnedRookMoves(U64 orooks, U64 ourPieces, U64 mrays);
         std::string pinnedQueenMoves(U64 oqueens, U64 ourPieces, U64 mrays);
         //special make move to determine if the pinned moves are legal or not
-        std::string makePinnedMovesLegal(std::string moves, U64 wpawns, U64 wrooks, U64 wknights, U64 wbishops, U64 wqueens, U64 wking, U64 bpawns, U64 brooks, U64 bknights, U64 bbishops, U64 bqueens, U64 bking);
+        std::string makePinnedMovesLegal(bool isWhite, std::string moves, U64 wpawns, U64 wrooks, U64 wknights, U64 wbishops, U64 wqueens, U64 wking, U64 bpawns, U64 brooks, U64 bknights, U64 bbishops, U64 bqueens, U64 bking);
+    //remove pinned pieces from normal piece generation but not from white pieces or all piece baords. reinstate after all moves genned
+    std::string removePinnedPieces(U64 pinnedBB, bool whiteOrBlack);
+    void restorePinnedPieces(std::string pieces);
+
+
+    /* What I still need.
+     * Is King in check or double check beginning of move gen
+     * if king is in check only gen moves that block check or remove piece placing check
+     * if king is in double check only gen king moves
+     * */
 
 //moves
     std:: string makeMove(std::string move);
@@ -66,6 +76,12 @@ public:
         bool isWhite(U64 pieceMoving);
         //is this a capture move if so, which piece is captured
         char isCapture(U64 landing, bool isWhite);
+        //if move is capture update appropiate board and store capture coordinates
+        std::string updateCapture(U64 landing);
+    //takes a string input of move that contains piece data, coordinate data, and capture data
+    void unmakeMove(std::string moveKey);
+        //undos capture if needed           //LOOKS LIKE THERE MIGHT BE AN ERROR IN SWITCH STATMENTS TOO MANY CASES TRIED, GO FIX LATER
+        void undoCapture(U64 location, char piece, char whiteOrBlack);
 
 
 
