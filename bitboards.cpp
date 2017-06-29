@@ -106,10 +106,10 @@ U64 BBBlackKing;
 std::string chessBoard [8][8]= {
     {"r", "n", "b", "q", "k", "b", "n", "r"},
     {"p", "p", "p", "p", "p", "p", "p", "p",},
-    {" ", " ", " ", "r", " ", "b", " ", " "},
-    {" ", " ", " ", "P", "P", " ", " ", " "},
-    {" ", "r", "P", "K", " ", "P", "q", " "},
     {" ", " ", " ", " ", " ", " ", " ", " "},
+    {" ", " ", " ", " ", "q", " ", " ", " "},
+    {" ", " ", " ", "P", " ", " ", " ", " "},
+    {" ", " ", "K", " ", " ", " ", " ", " "},
     {"P", "P", "P", "P", "P", "P", "P", "P"},
     {"R", "N", "B", "Q", " ", "B", "N", "R"},
               };
@@ -163,6 +163,8 @@ std::string BitBoards::possibleMovesW(U64 whitepieces, U64 wpawns, U64 wrooks, U
     //generate pinned BB and remove pieces from it for sepperate move gen ~~ opposite piece color aside from king
     pinned = pinnedBB(brooks, bbishops, bqueens, wking);
     moveList += pinnedMoves(pinned, wpawns, wrooks, wbishops, wqueens, wking, brooks, bbishops, bqueens, whitepieces, true);
+    //test all pinned moves to be sure they're legal
+    moveList = makePinnedMovesLegal(moveList, wpawns, wrooks, wknights, wbishops, wqueens, wking, bpawns, brooks, bknights, bbishops, bqueens, bking);
 
     moveList += possibleWP(wpawns, empty, bking);
     moveList += possibleR(wrooks, whitepieces, bking);
@@ -339,6 +341,179 @@ U64 BitBoards::unsafeForBlack(U64 wpawns, U64 wrooks, U64 wknights, U64 wbishops
 
     return unsafe;
 }
+
+std::string BitBoards::makeMove(std::string move)
+{
+    std::string savedMove, pieceCaptured;
+    //parse string move and change to ints
+    int x = move[0] - 0;
+    int y = move[1] - 0;
+    int x1 = move[2] - 0;
+    int y1 = move[3] - 0;
+    int xyI = y*8+x, xyE = y1*8+x1;
+    //inital spot piece mask and end spot mask
+    U64 pieceMaskI = 0LL, pieceMaskE = 0LL, updateBB = 0LL;
+    pieceMaskI += 1LL<< xyI;
+    pieceMaskE += 1LL << xyE;
+
+    //store coordiantes for undoing move
+    //final order is x, y, x1, y1, piece moved, piece captured (0 if none)
+    savedMove += x;
+    savedMove += y;
+    savedMove += x1;
+    savedMove += y1;
+
+    //is piece black or white
+    bool wOrB = isWhite(pieceMaskI);
+
+    //drawBB(pieceMaskI);
+    //drawBB(BBWhitePawns & pieceMaskI);
+    //drawBB(pieceMaskE);
+
+    //find BB that contains correct piece, remove piece from it's starting pos
+    //on piece BB, add piece to string savedMove, if it's a capture add piece to be captured,
+    //along with capturer coordinates
+
+    //white pieces
+    if(wOrB == true){
+        if(BBWhitePawns & pieceMaskI){
+            BBWhitePawns &= ~pieceMaskI;
+            savedMove += "P";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBWhiteRooks & pieceMaskI){
+            BBWhiteRooks &= ~pieceMaskI;
+            savedMove += "R";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBWhiteKnights & pieceMaskI){
+            BBWhiteKnights &= ~pieceMaskI;
+            savedMove += "N";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBWhiteBishops & pieceMaskI){
+            BBWhiteBishops &= ~pieceMaskI;
+            savedMove += "B";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBWhiteQueens & pieceMaskI){
+            BBWhiteQueens &= ~pieceMaskI;
+            savedMove += "Q";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBWhiteKing & pieceMaskI){
+            BBWhiteKing &= ~pieceMaskI;
+            savedMove += "K";
+            savedMove += isCapture(pieceMaskE, wOrB);
+        }
+    //black pieces
+    } else {
+        if(BBBlackPawns & pieceMaskI){
+            BBBlackPawns &= ~pieceMaskI;
+            savedMove += "p";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBBlackRooks & pieceMaskI){
+            BBBlackRooks &= ~pieceMaskI;
+            savedMove += "r";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBBlackKnights & pieceMaskI){
+            BBBlackKnights &= ~pieceMaskI;
+            savedMove += "n";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBBlackBishops & pieceMaskI){
+            BBBlackBishops &= ~pieceMaskI;
+            savedMove += "b";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBBlackQueens & pieceMaskI){
+            BBBlackQueens &= ~pieceMaskI;
+            savedMove += "q";
+            savedMove += isCapture(pieceMaskE, wOrB);
+
+        } else if (BBBlackKing & pieceMaskI){
+            BBBlackKing &= ~pieceMaskI;
+            savedMove += "k";
+            savedMove += isCapture(pieceMaskE, wOrB);
+        }
+    }
+
+
+
+
+
+}
+
+bool BitBoards::isWhite(U64 pieceMoving)
+{
+    //figure out if piece is white or black
+    U64 wmask = BBWhitePieces;
+    drawBB(pieceMoving);
+    if(wmask & pieceMoving){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+char BitBoards::isCapture(U64 landing, bool isWhite)
+{
+    if(isWhite == true){
+        if(landing & BBBlackPieces){
+            if(landing & BBBlackPawns){
+                return 'p';
+            } else if (landing & BBBlackRooks){
+                return 'r';
+            } else if (landing & BBBlackKnights){
+                return 'n';
+            } else if (landing & BBBlackBishops){
+                return 'b';
+            } else if (landing & BBBlackQueens){
+                return 'q';
+            }
+        } else {
+            return '0';
+        }
+    } else {
+        if(landing & BBWhitePieces){
+            if(landing & BBWhitePawns){
+                return 'P';
+            } else if (landing & BBWhiteRooks){
+                return 'R';
+            } else if (landing & BBWhiteKnights){
+                return 'N';
+            } else if (landing & BBWhiteBishops){
+                return 'B';
+            } else if (landing & BBWhiteQueens){
+                return 'Q';
+            }
+        } else {
+            return '0';
+        }
+    }
+    return '0';
+}
+
+
+std::string BitBoards::makePinnedMovesLegal(std::string moves, U64 wpawns, U64 wrooks, U64 wknights, U64 wbishops, U64 wqueens, U64 wking, U64 bpawns, U64 brooks, U64 bknights, U64 bbishops, U64 bqueens, U64 bking)
+{
+    std::string move, legalMoves;
+    //loop through moves and make them, test legal, unmake
+    for(int i = 0; i < moves.length()/4; i+=4){
+        move = "";
+        move += moves[i];
+        move += moves[i+1];
+        move += moves[i+2];
+        move += moves[i+3];
+        //make the move
+        makeMove(move);
+
+    }
+
+}
+
 //first function calc pieces pinned between sliders and king second calcs pinned piece moves
 U64 BitBoards::pinnedBB(U64 rooks, U64 bishops, U64 queens, U64 king)
 {
@@ -483,18 +658,32 @@ std::string BitBoards::pinnedMoves(U64 pinned, U64 opawns, U64 orooks, U64 obish
     FullTiles = tempStoreTiles;
 
 
-    U64 enemyPieces = ~ourPieces & FullTiles;
+    U64 enemyPieces = ~ourPieces & FullTiles, empty = ~FullTiles;
 
     //only check pinned pieces
     //pawns
     opawns = opawns & pinned;
-    moves += pinnedPawnCaptures(opawns, enemyPieces, mrays, isWhite);
+    if(opawns != 0){
+        moves += pinnedPawnCaptures(opawns, enemyPieces, mrays, isWhite);
+        moves += pinnedPawnPushes(opawns, empty, mrays, isWhite);
+    }
     //bishops
     obishops = obishops & pinned;
-    moves += pinnedBishopMoves(obishops, ourPieces, mrays);
+    if(obishops != 0){
+        moves += pinnedBishopMoves(obishops, ourPieces, mrays);
+    }
     //rooks
-
+    orooks = orooks & pinned;
+    if(orooks != 0){
+        moves += pinnedRookMoves(orooks, ourPieces, mrays);
+    }
     //queens
+    oqueens = oqueens & pinned;
+    if(oqueens != 0){
+        moves += pinnedQueenMoves(oqueens, ourPieces, mrays);
+    }
+
+
 
 
     drawBB(enemyPieces);
@@ -559,6 +748,66 @@ std::string BitBoards::pinnedPawnCaptures(U64 opawns, U64 enemyPieces, U64 mrays
     }
 }
 
+std::string BitBoards::pinnedPawnPushes(U64 opawns, U64 EmptyTiles, U64 mrays, bool isWhite)
+{
+    std::string moves;
+    U64 PAWN_MOVES;
+    if(isWhite == true){
+        //forward one
+        U64 PAWN_MOVES = northOne(opawns) & EmptyTiles & mrays;
+        for(int i = 0; i < 64; i++){
+            if(((PAWN_MOVES>>i)&1)==1){
+                moves+=i%8;
+                moves+=i/8+1;
+                moves+=i%8;
+                moves+=i/8;
+
+            }
+        }
+
+        //forward two
+        PAWN_MOVES = (opawns>>16) & EmptyTiles &(EmptyTiles>>8) &rank4 & mrays;
+        for(int i = 0; i < 64; i++){
+            if(((PAWN_MOVES>>i)&1)==1){
+                moves+=i%8;
+                moves+=i/8+2;
+                moves+=i%8;
+                moves+=i/8;
+
+            }
+        }
+
+    } else {
+        //forward one
+        U64 PAWN_MOVES = southOne(opawns) & EmptyTiles & mrays;
+        for(int i = 0; i < 64; i++){
+            if(((PAWN_MOVES>>i)&1)==1){
+                //list+=""+(i/8+1)+(i%8)+(i/8)+(i%8);
+                moves+=i%8;
+                moves+=i/8-1;
+                moves+=i%8;
+                moves+=i/8;
+
+            }
+        }
+
+        //forward two
+        PAWN_MOVES = (opawns<<16) & EmptyTiles &(EmptyTiles<<8) & rank5 &mrays;
+        for(int i = 0; i < 64; i++){
+            if(((PAWN_MOVES>>i)&1)==1){
+                moves+=i%8;
+                moves+=i/8-2;
+                moves+=i%8;
+                moves+=i/8;
+
+            }
+        }
+
+    }
+    return moves;
+
+}
+
 std::string BitBoards::pinnedBishopMoves(U64 obishops, U64 ourPieces, U64 mrays)
 {
     std::string list;
@@ -580,6 +829,55 @@ std::string BitBoards::pinnedBishopMoves(U64 obishops, U64 ourPieces, U64 mrays)
     }
     return list;
 }
+
+std::string BitBoards::pinnedRookMoves(U64 orooks, U64 ourPieces, U64 mrays)
+{
+    std::string list;
+    U64 moves;
+
+    //loop through and find rooks
+    for(int i = 0; i < 64; i++){
+        if(((orooks>>i) &1) == 1){
+            //map moves that don't collide with friendlys and only are along pin lines
+            moves = horizVert(i) & ~ourPieces  & mrays;
+            //drawBB(moves);
+            for(int j = 0; j < 64; j++){
+                if(((moves>>j) &1) == 1){
+                    list+=i%8;
+                    list+=i/8;
+                    list+=j%8;
+                    list+=j/8;
+                }
+            }
+        }
+    }
+    return list;
+}
+
+std::string BitBoards::pinnedQueenMoves(U64 oqueens, U64 ourPieces, U64 mrays)
+{
+    std::string list;
+    U64 moves;
+    //loop through and find bishops
+    for(int i = 0; i < 64; i++){
+        if(((oqueens>>i) &1) == 1){
+            //map moves that don't collide with friendlys and is only along pinned ray
+            moves = DAndAntiDMoves(i) + horizVert(i) & ~ourPieces & mrays;
+            //TEST drawing moves
+            //drawBB(moves);
+            for(int j = 0; j < 64; j++){
+                if(((moves>>j) &1) == 1){
+                    list+=i%8;
+                    list+=i/8;
+                    list+=j%8;
+                    list+=j/8;
+                }
+            }
+        }
+    }
+    return list;
+}
+
 //single ray direction functions -- mostly for pinned piece calcs
 U64 BitBoards::up(U64 piece)
 {
@@ -818,7 +1116,7 @@ std::string BitBoards::possibleR(U64 wOrBrooks, U64 wOrBpieces, U64 oppositeking
 {
     std::string list;
     U64 moves;
-    //loop through and find bishops
+    //loop through and find rooks
     for(int i = 0; i < 64; i++){
         if(((wOrBrooks>>i) &1) == 1){
             //map moves that don't collide with friendlys and doesn't illegaly take black king
@@ -970,6 +1268,7 @@ return list;
 //implament into other MOVE GEN ASIDE FROM KINGS, MUCH FASTER THAN for 64 loop
 int BitBoards::trailingZeros(U64 i)
 {
+    //find the first one and number of zeros after it
     if (i == 0) return 64;
     U64 x = i;
     U64 y;
@@ -1010,6 +1309,7 @@ U64 BitBoards::DAndAntiDMoves(int s)
 
 U64 BitBoards::ReverseBits(U64 input)
 {
+    //literally reverse bits in U64's
     U64 output = input;
     for (int i = sizeof(input) * 8-1; i; --i)
     {

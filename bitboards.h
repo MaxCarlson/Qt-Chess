@@ -49,14 +49,25 @@ public:
         U64 downright(U64 piece);
         U64 downleft(U64 piece);
         U64 upleft(U64 piece);
-        //our pieces and enemy pieces -- for finding moves for pinned pieces along pin ray
+    //our pieces and enemy pieces -- for finding moves for pinned pieces along pin ray
     std::string pinnedMoves(U64 pinned, U64 opawns, U64 orooks, U64 obishops, U64 oqueens, U64 oking, U64 erooks, U64 ebishops, U64 equeens, U64 ourPieces, bool isWhite);
         //pinned pieces movements
         std::string pinnedPawnCaptures(U64 opawns, U64 enemyPieces, U64 mrays, bool isWhite);
+        std::string pinnedPawnPushes(U64 opawns, U64 EmptyTiles, U64 mrays, bool isWhite);
         std::string pinnedBishopMoves(U64 obishops, U64 ourPieces, U64 mrays);
+        std::string pinnedRookMoves(U64 orooks, U64 ourPieces, U64 mrays);
+        std::string pinnedQueenMoves(U64 oqueens, U64 ourPieces, U64 mrays);
+        //special make move to determine if the pinned moves are legal or not
+        std::string makePinnedMovesLegal(std::string moves, U64 wpawns, U64 wrooks, U64 wknights, U64 wbishops, U64 wqueens, U64 wking, U64 bpawns, U64 brooks, U64 bknights, U64 bbishops, U64 bqueens, U64 bking);
 
 //moves
-    U64 makeMove(U64 board, std::string move, char type);
+    std:: string makeMove(std::string move);
+        //find out if piece is white or black
+        bool isWhite(U64 pieceMoving);
+        //is this a capture move if so, which piece is captured
+        char isCapture(U64 landing, bool isWhite);
+
+
 
     //pawn moves
     std::string possibleWP(U64 wpawns, U64 EmptyTiles, U64 blackking);
