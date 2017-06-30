@@ -5,6 +5,8 @@ typedef unsigned long long  U64; // supported by MSC 13.00+ and C99
 #define C64(constantU64) constantU64##ULL
 
 #include <string>
+#include <cstdio>
+#include <ctime>
 
 
 class BitBoards
@@ -61,13 +63,25 @@ public:
         std::string makePinnedMovesLegal(bool isWhite, std::string moves, U64 wpawns, U64 wrooks, U64 wknights, U64 wbishops, U64 wqueens, U64 wking, U64 bpawns, U64 brooks, U64 bknights, U64 bbishops, U64 bqueens, U64 bking);
     //remove pinned pieces from normal piece generation but not from white pieces or all piece baords. reinstate after all moves genned
     std::string removePinnedPieces(U64 pinnedBB, bool whiteOrBlack);
-    void restorePinnedPieces(std::string pieces);
+    void restorePinnedPieces(std::string pieces, bool wOrB);
+
+    //king and check
+    //create a BB of pieces putting king in check
+    U64 checkersBB(U64 ourKing, bool isWhite);
+    //are we in double check
+    bool isDoubleCheck(U64 attackers);
+    //generate moves if we're in check
+    std::string genInCheckMoves(U64 attacker, U64 ourKing, bool isWhite);
+       //helper for piece move gen
+       U64 genTakeOnlys(U64 attacker, U64 ourKing, bool isWhite);
+       U64 genBlockOrTakes(U64 attacker, U64 ourKing, bool isWhite, char piece); ///NOTE MAKE CODE MORE VERSATILE BY MAKING St MOVE GEN FUNCTIONS TAKE A CAPTURE OR BLOCK MASK
+
 
 
     /* What I still need.
-     * Is King in check or double check beginning of move gen
+     * D - Is King in check or double check beginning of move gen
      * if king is in check only gen moves that block check or remove piece placing check
-     * if king is in double check only gen king moves
+     * D - if king is in double check only gen king moves
      * */
 
 //moves
